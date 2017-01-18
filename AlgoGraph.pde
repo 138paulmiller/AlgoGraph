@@ -9,18 +9,11 @@ void setup(){
   Vertex e = new Vertex(100,60,'E');
   Vertex f = new Vertex(500,54,'F');
   Vertex g = new Vertex(500,54,'G');
-  undirgraph.addEdge(a,b, 31);
-  undirgraph.addEdge(d,b, 52);
-  undirgraph.addEdge(a,c, 20);
-  undirgraph.addEdge(a,d, 32);  
-  undirgraph.addEdge(c,d, 57);
-  undirgraph.addEdge(e,d, 43);
-  undirgraph.addEdge(e,f, 22);
-  undirgraph.addEdge(c,f, 84);
-  undirgraph.addEdge(b,f, 22);
-  undirgraph.addEdge(a,g, 30);
-  undirgraph.addEdge(f,g, 37);
-  undirgraph.addEdge(b,g, 29);  
+  undirgraph.addEdge(a,c, 10);
+  undirgraph.addEdge(a,d, 7);
+  undirgraph.addEdge(d,c, 9);
+  undirgraph.addEdge(d,b, 32);  
+  undirgraph.addEdge(d,e, 23); 
 
 }
 
@@ -32,7 +25,7 @@ void draw(){
 void mouseClicked(){
   for(Vertex v : undirgraph.getVertexSet()){
     if(v.intersects(mouseX, mouseY)){
-      UndirectedGraph bfs = undirgraph.getBFS(v);
+      UndirectedGraph bfs = getBFS(undirgraph,v);
       if(bfs != null){
         undirgraph = bfs;
       }
