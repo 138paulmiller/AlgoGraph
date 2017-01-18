@@ -29,8 +29,9 @@ class UndirectedGraph{
      for(Edge e : adjacentEdges){
        e.draw();
      }
-     entry.getKey().draw();
     }
+    for(Vertex v: getVertexSet())
+      v.draw();
   }
   public Set<Vertex> getVertexSet(){
    return edgeMap.keySet(); 
