@@ -1,15 +1,15 @@
 import java.util.LinkedList;
-import java.util.LinkedList;
+import java.util.TreeSet;
 class UndirectedGraph{
   public UndirectedGraph(){
-    edgeSet = new LinkedList<Edge>();
-    vertexSet = new LinkedList<Vertex>();
+    edgeSet = new TreeSet<Edge>();
+    vertexSet = new TreeSet<Vertex>();
   }
   public void addVertex(Vertex a){
      if(!vertexSet.contains(a))
        vertexSet.add(a);
   }
-  public void addEdge(Vertex a,Vertex b, float weight){
+  public void addEdge(Vertex a,Vertex b, int weight){
    Edge e = new Edge(a,b,weight);
     if(!edgeSet.contains(e)){
       addVertex(a);
@@ -35,11 +35,10 @@ class UndirectedGraph{
        v.draw();
      
   }
-  public LinkedList<Vertex> getVertexSet(){
+  public TreeSet<Vertex> getVertexSet(){
     return vertexSet;
   }
-  public UndirectedGraph getBFS(){
-    Vertex a = vertexSet.getFirst();
+  public UndirectedGraph getBFS(Vertex a){
     UndirectedGraph bfs = new UndirectedGraph();
     HashMap<Vertex, Boolean> visitedMap = new HashMap<Vertex, Boolean>();
     for(Vertex v : vertexSet)
@@ -58,12 +57,15 @@ class UndirectedGraph{
          if(e != null)
                 bfs.addEdge(e.a,e.b,e.weight);
          else
+         {
            print("BFS: Error finding Edge for (Vertex,Neighbor");
+           return null;  
+         }
        }
       } 
     }
     return bfs;
   }
-  LinkedList<Edge> edgeSet;
-  LinkedList<Vertex> vertexSet;
+  TreeSet<Edge> edgeSet;
+  TreeSet<Vertex> vertexSet;
 }

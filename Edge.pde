@@ -1,11 +1,11 @@
 
-class Edge{
+class Edge implements Comparable<Edge>{
   public Edge( ){
     this.a = null;
     this.b = null;
-    this.weight = 0.0;
+    this.weight = 0;
   }
-  public Edge(Vertex a, Vertex b, float weight){
+  public Edge(Vertex a, Vertex b, int weight){
     this.a = a;
     this.b = b;
     this.weight = weight;
@@ -14,6 +14,9 @@ class Edge{
     this.a = other.a;
     this.b = other.b;
     this.weight = other.weight;
+  }
+  public int compareTo(Edge e){
+    return ((Edge)e).weight - weight;
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Edge) && (this.a == ((Edge)o).a && 
@@ -35,5 +38,5 @@ class Edge{
     }
   }
   Vertex a,b;
-  float weight;
+  int weight;
 }

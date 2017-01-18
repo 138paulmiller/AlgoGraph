@@ -1,11 +1,11 @@
-class Vertex{
+class Vertex implements Comparable<Vertex>{
   public Vertex(){
-     this.label = "";
+    this.label = '\0';
     this.x = 0.0;
     this.y = 0.0;
     this.neighborSet = new LinkedList<Vertex>();
   }
-  public Vertex(float x, float y, String label){
+  public Vertex(float x, float y, char label){
     this.label = label;
     this.x = x;
     this.y = y;
@@ -17,10 +17,14 @@ class Vertex{
     this.y  = other.y;
     this.neighborSet = other.neighborSet;
   }
+  
   public void addNeighbor(Vertex v){
     if(!neighborSet.contains(v))
       neighborSet.add(v);
       
+  }
+  public int compareTo(Vertex v){
+     return ((Vertex) v).label - label;
   }
   public LinkedList<Vertex> getNeighbors(){
     return neighborSet;
@@ -53,7 +57,7 @@ class Vertex{
     text(label, x-radius*0.30,y+radius*0.30);
     popMatrix();
   }
-  public String label;
+  public char label;
   public float x,y;
   public float radius = 32;
   public float textSize = 32*.85;
