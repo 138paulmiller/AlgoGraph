@@ -1,56 +1,40 @@
 class Vertex implements Comparable<Vertex>{
   public Vertex(){
-    this.label = '\0';
-    this.x = 0.0;
-    this.y = 0.0;
+    this.button = new Button(0,0,0,0,"\0");
+    this.id="\0";
+
   }
-  public Vertex(float x, float y, char label){
-    this.label = label;
-    this.x = x;
-    this.y = y;
+  public Vertex(float x, float y, String label){
+    this.button = new Button(x,y,32,32,label);
+    this.id = label;
   }
   public Vertex (Vertex other){
-    this.label  = other.label;
-    this.x  = other.x;
-    this.y  = other.y;
+    this.button = new Button(other.button);
+    this.id = other.id;
+
+  }
+  public String getID(){
+    return id;
   }
   
-  
   public int compareTo(Vertex v){
-     return label - v.label;
+     return id.compareTo(v.getID());
   }
  
   @Override public boolean equals(Object o) {
-      return (o instanceof Vertex) && (this.x == ((Vertex)o).x && 
-                                       this.y == ((Vertex)o).y && 
-                                       this.label == ((Vertex)o).label);
+      return (o instanceof Vertex) && (this.getButton().getX() == ((Vertex)o).getButton().getX() && 
+                                       this.getButton().getY() == ((Vertex)o).getButton().getY() && 
+                                       this.id == ((Vertex)o).getID());
   }
   
-  public boolean intersects(float x, float y){
-    //if vertex ellipse is within clickable range ( if abs(dist) between this(x,y) and (x,y) < radius then (x,y) in e       
-    if(sqrt(pow(this.x-x,2) + pow(this.y-y,2))< radius){
-      return true;
-    }
-      return false;  
-
- }
-  void draw(){
-    pushMatrix();
-    
-    //render pos in eucledian space
-    stroke(0,130, 240);  //pen stroke color color bgr
-    fill(0,130, 240);     //file  rect with same color
-    ellipse(x,y,radius,radius);
-    
-    //render label on top
-    textSize(textSize);
-    fill(245, 230,240); //nearly white text 
-    text(label, x-radius*0.30,y+radius*0.30);
-    popMatrix();
+  public Button getButton(){
+    return button;
   }
-  public char label;
-  public float x,y;
-  public float radius = 32;
-  public float textSize = 32*.85;
+  void draw(){
+    button.draw();
+  }
+  public Button button;
+  String id;
+
 
 }
