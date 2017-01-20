@@ -72,11 +72,15 @@ void mouseClicked(){
         if(vertexB != null){ //if vertexMenu button click action for vertex
           print("\nClicked Vertex Menu Button: "+  vertexB.getLabel().getText());
           vertexB.click();
+          vertexMenu.hide();//hide menus  
+
         }
       }// end if ther is a selected vertex for vertex menu
       else if(graphB != null){
             print("\nClicked Graph Menu Button: "+  graphB.getLabel().getText());
-            graphB.click();    
+            graphB.click();
+            graphB.getLabel().setHighlight(true);
+
        }//end if graph button was clicked
        else if(v != null){ //if left vertex clicked
           if(edgeSelection){ //if selecting menu vertex
@@ -90,7 +94,9 @@ void mouseClicked(){
                vertexSource.getLabel().setHighlight(false);
                undirgraph.addEdge(vertexSource,vertexDest, 1);
                vertexDest = vertexSource = null;
-                edgeSelection = false;
+               edgeSelection = false;
+               graphMenu.hide();//hide menus 
+               
 
              }
           }
@@ -98,16 +104,14 @@ void mouseClicked(){
      else{ //sp;ace left click
       print("\nPos Clicked " + mouseX + " , " + mouseY);
 
-       if(vertexAdd){ //if selecting vertex 
+       if(vertexAdd){ //if adding action, add verte
                            print("\nAdding:" + mouseX + " , " + mouseY);
 
               undirgraph.addVertex(new Vertex(mouseX, mouseY, char('A'+ undirgraph.getVertexSet().size())));// add vertex of id one beyond size
               vertexAdd = false;
-              //if adding action, add vertex
+              graphMenu.hide();//hide menus  
             }
        }
-     vertexMenu.hide();//hide menus  
-     graphMenu.hide();//hide menus  
 
   }//if left
 }

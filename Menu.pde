@@ -10,6 +10,9 @@ class Menu{
   }
   void hide(){
      visible = false;
+     for(Button b : buttons){
+         b.getLabel().setHighlight(false);
+       }
   }
   void open(){
      visible = true;
