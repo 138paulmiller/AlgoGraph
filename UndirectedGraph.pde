@@ -1,14 +1,22 @@
 import java.util.Set;
 import java.util.LinkedList;
 import java.util.TreeSet;
+import java.util.Collections;
+
 class UndirectedGraph{
   public UndirectedGraph(){
     edgeMap = new HashMap<Vertex,TreeSet<Edge>> ();
+  }
+  public UndirectedGraph(UndirectedGraph other){
+    edgeMap = other.edgeMap;
   }
   public void addVertex(Vertex a){
      if(!edgeMap.containsKey(a)){
        edgeMap.put(a, new TreeSet<Edge>());
      }
+  }
+  public void addGraph(UndirectedGraph graph){
+    edgeMap.putAll(graph.edgeMap);
   }
   public void addEdge(Vertex source,Vertex dest, int weight){
    Edge e = new Edge(source,dest,weight);
@@ -25,23 +33,23 @@ class UndirectedGraph{
   public void draw(){
      
     for(HashMap.Entry<Vertex,TreeSet<Edge>> entry : edgeMap.entrySet()){
-      TreeSet<Edge> adjacentEdges  = entry.getValue();
-     for(Edge e : adjacentEdges){
+     for(Edge e :  entry.getValue()){
        e.draw();
      }
     }
     for(Vertex v: getVertexSet())
       v.draw();
   }
-  public Set<Vertex> getVertexSet(){
-   return edgeMap.keySet(); 
+  public ArrayList<Vertex> getVertexSet(){
+    ArrayList<Vertex> sortList=  new ArrayList(edgeMap.keySet());
+    Collections.sort(sortList);
+    return sortList;
   }
-  public Set<HashMap.Entry<Vertex,TreeSet<Edge>>> entrySet(){
-    return edgeMap.entrySet();
-  }
-  public TreeSet<Edge> getAdjacentEdges(Vertex v){
-     TreeSet<Edge> set = edgeMap.get(v); 
-     return set;
+  
+  public ArrayList<Edge> getAdjacentEdges(Vertex v){
+     ArrayList<Edge> sortList = new ArrayList<Edge>(edgeMap.get(v)); 
+     Collections.sort(sortList);
+     return sortList;
   }
   public void clear(){
      edgeMap.clear(); 

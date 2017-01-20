@@ -1,24 +1,28 @@
 class Vertex implements Comparable<Vertex>{
   public Vertex(){
     this.button = new Button(0,0,0,0,"\0",0);
-    this.id="\0";
+    this.id='\0';
 
   }
-  public Vertex(float x, float y, String label){
-    this.button = new Button(x,y,32,32,label,30);
-    this.id = label;
+  public Vertex(float x, float y, char id){
+    this.button = new Button(x,y,32,32,String.valueOf(id),30);
+    this.id = id;
+  }
+  public Vertex(float x, float y, int id){
+    this.button = new Button(x,y,32,32,String.valueOf(id),30);
+    this.id = char(id);
   }
   public Vertex (Vertex other){
     this.button = new Button(other.button);
     this.id = other.id;
 
   }
-  public String getID(){
+  public int getID(){
     return id;
   }
   
   public int compareTo(Vertex v){
-     return id.compareTo(v.getID());
+     return id - v.getID();
   }
  
   @Override public boolean equals(Object o) {
@@ -34,7 +38,7 @@ class Vertex implements Comparable<Vertex>{
     button.draw();
   }
   public Button button;
-  String id;
+  char id;
 
 
 }
