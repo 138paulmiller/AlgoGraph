@@ -9,8 +9,22 @@ Vertex selectedVertex = null;
 void setup(){
   size(1080, 720);
   initDefaultGraph();
-  vertexMenu.addButton("BFS");
-  vertexMenu.addButton("DFS");
+  vertexMenu.addButton("BFS", new ButtonInterface(){
+                                    public void onClick(){
+                                      UndirectedGraph bfs = getBFS(undirgraph,selectedVertex);
+                                      if(bfs != null){
+                                        undirgraph = bfs;
+                                      }
+                                    }
+                              });
+  vertexMenu.addButton("DFS", new ButtonInterface(){
+                                    public void onClick(){
+                                      UndirectedGraph dfs = getDFS(undirgraph,selectedVertex);
+                                      if(dfs != null){
+                                        undirgraph = dfs;
+                                      }
+                                    }
+                              });
 
 }
 
@@ -33,8 +47,8 @@ void mouseClicked(){
   else if(mouseButton == LEFT){
       if(b != null && selectedVertex != null ){ //if vertexMenu button click
         print("Clicked Button: "+  b.getLabel().getText());
-        processAlgorithm(b.getLabel().getText());
-      selectedVertex = null; //deselect vertex
+        b.click();
+        selectedVertex = null; //deselect vertex
     }
    vertexMenu.hide();//hide vertexMenu  
   }//if left
@@ -69,20 +83,7 @@ void keyPressed(){
    initDefaultGraph();
  }
 }
-void processAlgorithm(String algorithmID){
- if(algorithmID == "BFS"){
-    UndirectedGraph bfs = getBFS(undirgraph,selectedVertex);
-    if(bfs != null){
-      undirgraph = bfs;
-    }
- }
- else if(algorithmID == "DFS"){
-    UndirectedGraph dfs = getDFS(undirgraph,selectedVertex);
-    if(dfs != null){
-      undirgraph = dfs;
-    }
-  }
-}
+
 void initDefaultGraph(){
   undirgraph.clear();
  Vertex a = new Vertex(440,294,'A');

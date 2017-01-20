@@ -26,9 +26,12 @@ class Menu{
        b.getLabel().setY(y+(h*i++));
      }
   }
-  void addButton(String label){
+  void addButton(String label, ButtonInterface buttonInterface){
+    
     int count = buttons.size();
-    buttons.addLast(new Button(x,y+(h*count),w,h, label, 18));
+    Button b = new Button(x,y+(h*count),w,h, label, 18);
+    b.setInterface(buttonInterface);
+    buttons.addLast(b);
     buttons.getLast().getLabel().setRGB(red,green,blue);
   }
   Button getIntersectingButton(float x, float y){
