@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 class Menu{
-  public Menu(float w, float h){
+  public Menu(int w, int h){
     buttons = new LinkedList<Button>();
      this.x=  0;
      this.y = 0;
@@ -17,23 +17,26 @@ class Menu{
   boolean isOpen(){
     return visible;
   }
-  void setPosition(float x,float y){
+  void setPosition(int x,int y){
     this.x = x;
     this.y = y;
     int i = 0;
     for(Button b : buttons){ //update button position
-       b.setX(x);
-       b.setY(y+(h*i++));
+       b.getLabel().setX(x);
+       b.getLabel().setY(y+(h*i++));
      }
   }
-  void addButton(String label){
+  void addButton(String label, ButtonInterface buttonInterface){
+    
     int count = buttons.size();
-    buttons.addLast(new Button(x,y+(h*count),w,h, label, 18));
-    buttons.getLast().setRGB(red,green,blue);
+    Button b = new Button(x,y+(h*count),w,h, label, 18);
+    b.setInterface(buttonInterface);
+    buttons.addLast(b);
+    buttons.getLast().getLabel().setRGB(red,green,blue);
   }
   Button getIntersectingButton(float x, float y){
     for(Button b : buttons){
-      if(b.intersects(x,y)){
+      if(b.getLabel().intersects(x,y)){
          return b; //return vertex 
       }
     }
@@ -47,7 +50,7 @@ class Menu{
     }
     
   }
-  float x,y, w,h;
+  int x,y, w,h;
   LinkedList<Button> buttons;
   boolean visible;
 }

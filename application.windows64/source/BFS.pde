@@ -1,10 +1,10 @@
+import java.util.HashMap;
 public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
     UndirectedGraph bfs = new UndirectedGraph();
     HashMap<Vertex, Boolean> visitedMap = new HashMap<Vertex, Boolean>();
-    Set<HashMap.Entry<Vertex,TreeSet<Edge>>> entrySet =graph.entrySet();
-    for(HashMap.Entry<Vertex,TreeSet<Edge>> entry : entrySet)
-      visitedMap.put(entry.getKey(), false);
-    LinkedList<Vertex> q = new LinkedList<Vertex>();
+    for(Vertex v : graph.getVertexSet())
+      visitedMap.put(v, false);
+    LinkedList<Vertex> q = new LinkedList<Vertex>(); //bfs
     q.add(a); //visit a
     visitedMap.put(a, true);
     while(!q.isEmpty()){

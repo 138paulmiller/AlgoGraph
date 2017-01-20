@@ -16,7 +16,10 @@ class Edge implements Comparable<Edge>{
     this.weight = other.weight;
   }
   public int compareTo(Edge e){
-    return weight - e.weight;
+    int val =  weight - e.weight;
+    if( val == 0) //order by vertex if equal
+      val = dest.compareTo(e.getDest());    
+    return val;
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Edge) && (this.source == ((Edge)o).source && 
@@ -35,11 +38,11 @@ class Edge implements Comparable<Edge>{
       pushMatrix();
       stroke(140, 50,0);  //color rgb
       strokeWeight(3);
-      line(source.getButton().getX(),source.getButton().getY(),dest.getButton().getX(),dest.getButton().getY());
-      textSize(source.getButton().getTextSize());
+      line(source.getLabel().getX(),source.getLabel().getY(),dest.getLabel().getX(),dest.getLabel().getY());
+      textSize(source.getLabel().getTextSize());
       fill(60,245, 0);     //file  rect with same color
 
-      text(String.valueOf(weight), (source.getButton().getX()+dest.getButton().getX())/2.0,( source.getButton().getY()+ dest.getButton().getY())/2.0);
+      text(String.valueOf(weight), (source.getLabel().getX()+dest.getLabel().getX())/2.0,( source.getLabel().getY()+ dest.getLabel().getY())/2.0);
       popMatrix();
     }
   }
