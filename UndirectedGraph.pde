@@ -43,5 +43,8 @@ class UndirectedGraph{
      TreeSet<Edge> set = edgeMap.get(v); 
      return set;
   }
+  public void clear(){
+     edgeMap.clear(); 
+  }
   HashMap<Vertex,TreeSet<Edge>> edgeMap;
 }

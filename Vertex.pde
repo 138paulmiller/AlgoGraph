@@ -1,11 +1,11 @@
 class Vertex implements Comparable<Vertex>{
   public Vertex(){
-    this.button = new Button(0,0,0,0,"\0");
+    this.button = new Button(0,0,0,0,"\0",0);
     this.id="\0";
 
   }
   public Vertex(float x, float y, String label){
-    this.button = new Button(x,y,32,32,label);
+    this.button = new Button(x,y,32,32,label,30);
     this.id = label;
   }
   public Vertex (Vertex other){

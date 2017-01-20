@@ -16,7 +16,7 @@ public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
          q.addFirst(e.getDest());  //add to traversal queue
          bfs.addEdge(e.getSource(),e.getDest(),e.weight);   
         }
-       }
-      } 
+      }
+    }
     return bfs;
   }

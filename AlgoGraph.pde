@@ -1,15 +1,84 @@
 import java.util.HashMap;
-float red = 0, green =23,blue = 230;
+float red = 0, green =250,blue = 140;
+float buttonWidth =250 , buttonHeight = 32;
 String noneLabel ="NONE";
 String bfsLabel = "BFS";
-String selectedButton = noneLabel;
-
-HashMap<String,Button> buttons = new HashMap<String,Button>();
+Menu menu = new Menu(72,32);
 UndirectedGraph undirgraph = new UndirectedGraph();
 Vertex selectedVertex = null;
 void setup(){
   size(1080, 720);
-  Vertex a = new Vertex(440,294,"A");
+  initDefaultGraph();
+  menu.addButton("BFS");
+  menu.addButton("DFS");
+
+}
+
+
+void draw(){
+ background(0); 
+ undirgraph.draw();
+ menu.draw();
+}
+void mouseClicked(){
+  Vertex v = getIntersectingVertex(mouseX, mouseY);//get vertex clicked
+   Button b = menu.getIntersectingButton(mouseX, mouseY);//get vertex clicked
+  
+  //if vertex right clicked
+  if(mouseButton == RIGHT && v != null){ //right click vertex to show menu
+    menu.setPosition(mouseX, mouseY);
+    menu.open();
+    selectedVertex = v;
+  }
+  //if button left clicked
+  else if(mouseButton == LEFT){
+      if(b != null && selectedVertex != null ){ //if menu button click
+        print("Clicked Button: "+  b.getText());
+        if(b.getText() == "BFS"){
+          UndirectedGraph bfs = getBFS(undirgraph,selectedVertex);
+          if(bfs != null){
+            undirgraph = bfs;
+          }
+        }
+      selectedVertex = null; //deselect vertex
+    }
+   menu.hide();//hide menu  
+  }//if left
+}
+Vertex getIntersectingVertex(float x, float y){
+  for(Vertex v : undirgraph.getVertexSet()){
+      if(v.getButton().intersects(x,y)){
+         return v; //return vertex 
+      }
+  }
+  return null;
+}
+void mousePressed(){
+  if(mouseButton == LEFT){
+    Vertex v = getIntersectingVertex(mouseX, mouseY);//get vertex clicked
+    if(v != null)
+        selectedVertex = v;
+
+  }
+}
+void mouseDragged(){
+  if(mouseButton == LEFT && selectedVertex != null){
+    selectedVertex.getButton().setX(selectedVertex.getButton().getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
+    selectedVertex.getButton().setY(selectedVertex.getButton().getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
+  }
+}
+void mouseReleased(){
+  if(mouseButton == LEFT ){
+  }
+}
+void keyPressed(){
+ if(keyCode == ' '){ //clear
+   initDefaultGraph();
+ }
+}
+void initDefaultGraph(){
+  undirgraph.clear();
+ Vertex a = new Vertex(440,294,"A");
   Vertex b= new Vertex(45,450,"B");
   Vertex c = new Vertex(590,200,"C");
   Vertex d = new Vertex(800,534,"D");
@@ -27,75 +96,5 @@ void setup(){
   undirgraph.addEdge(f,g, 7); 
   undirgraph.addEdge(g,e, 17); 
   undirgraph.addEdge(g,a, 2); 
-  undirgraph.addEdge(g,b, 45); 
-  buttons.put(bfsLabel,new Button(0,0,72, 32, bfsLabel));
-  buttons.get(bfsLabel).setRGB(red,green,blue);
-}
-
-
-void draw(){
- background(0); 
- undirgraph.draw();
- for(Button b : buttons.values()){
-     b.draw();
-  }
-}
-void mouseClicked(){
-  //if action perfom action
-  boolean intersection = false;
-  if(selectedButton != noneLabel){
-    for(Vertex v : undirgraph.getVertexSet()){
-      intersection =true;
-      if(v.getButton().intersects(mouseX, mouseY)){
-        if(selectedButton == bfsLabel){
-          UndirectedGraph bfs = getBFS(undirgraph,v);
-          if(bfs != null){
-            undirgraph = bfs;
-          }        
-        } 
-        break; //break from loop
-      }
-    }
-    //if not action, de select
-    if(buttons.containsKey(selectedButton)){
-    buttons.get(selectedButton).setHighlight(false); //default unselect curretn button
-    selectedButton = noneLabel;  
-    }
-  }
-  
-  if(!intersection){//if not vertex action, check for button click
-    for(Button b : buttons.values()){
-       if(b.intersects(mouseX, mouseY)){
-        selectedButton = b.getText();
-         print("Clicked Button: " + selectedButton);
-         //to highlight swap rgb order
-         if(buttons.containsKey(selectedButton))
-            buttons.get(selectedButton).setHighlight(true);
-       }
-    }
-  }
-  
-}
-void mousePressed(){
-  for(Vertex v : undirgraph.getVertexSet()){
-    if(v.getButton().intersects(mouseX, mouseY)){
-      selectedVertex = v;
-    }
-  }
-}
-void mouseDragged(){
-  if(selectedVertex != null){
-    selectedVertex.getButton().setX(selectedVertex.getButton().getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
-    selectedVertex.getButton().setY(selectedVertex.getButton().getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
-  }
-}
-void mouseReleased(){
-  if(selectedVertex != null){
-    selectedVertex = null;
-  }
-}
-void keyPressed(){
- if(keyCode == ' '){
-    
- }
+  undirgraph.addEdge(g,b, 45);  
 }

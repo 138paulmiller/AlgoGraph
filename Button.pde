@@ -1,11 +1,11 @@
 class Button{
-  public Button(float x,float y, float w, float h,String text){
+  public Button(float x,float y, float w, float h,String text, int textSize){
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.text = text;
-    this.textSize = h*0.75;
+    this.textSize = textSize;
     highlight = false;
     r = 0;
     g= 200; 
@@ -39,30 +39,31 @@ class Button{
     pushMatrix();
     
     //render pos in eucledian space
-    stroke(r,g,b);  //pen stroke color color bgr
+    stroke(0,0,0);  //pen stroke color black to outline button
     if(highlight){
-      stroke(g,b,g);     //file  rect with swapped color to highlight
       fill(g,b,g);     //file  rect with swapped color to highlight
     }else{
-      stroke(r,g,b);
       fill(r,g,b);
     }//file  rect with same color
+    //offset to center
     rect(x,y,w,h);
     
     //render label on top
-   textSize(textSize);
-    fill(245, 230,240); //nearly white text 
-    text(text, x+w*0.30,y+h*0.80);
-        popMatrix();
+    textSize(textSize);
+    fill(2, 2,0); //nearly black text 
+    text(text, x+w*0.20,y+h*0.80);
+    popMatrix();
 
   }
   public boolean intersects(float x, float y){
-    //if vertex ellipse is within clickable range ( if abs(dist) between this(x,y) and (x,y) < radius then (x,y) in e       
-    if(sqrt(pow(this.x-x,2) + pow(this.y-y,2))< sqrt(pow(w,2) + pow(h,2))){
-      return true;
-    }
-      return false;  
-
+//Let P(x,y), and rectangle A(x1,y1),B(x2,y2),C(x3,y3),D(x4,y4)
+//Calculate the sum of areas of △APD,△DPC,△CPB,△PBA△APD,△DPC,△CPB,△PBA.
+  if(x < this.x || y < this.y){
+    return false; 
+  }else if(x > this.x+w || y > this.y+h){
+    return false; 
+  }
+  return true;
  }
  public String getText(){
    return text;
