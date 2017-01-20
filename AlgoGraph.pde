@@ -32,8 +32,8 @@ void mouseClicked(){
   //if button left clicked
   else if(mouseButton == LEFT){
       if(b != null && selectedVertex != null ){ //if vertexMenu button click
-        print("Clicked Button: "+  b.getText());
-        processAlgorithm(b.getText());
+        print("Clicked Button: "+  b.getLabel().getText());
+        processAlgorithm(b.getLabel().getText());
       selectedVertex = null; //deselect vertex
     }
    vertexMenu.hide();//hide vertexMenu  
@@ -41,7 +41,7 @@ void mouseClicked(){
 }
 Vertex getIntersectingVertex(float x, float y){
   for(Vertex v : undirgraph.getVertexSet()){
-      if(v.getButton().intersects(x,y)){
+      if(v.getLabel().intersects(x,y)){
          return v; //return vertex 
       }
   }
@@ -56,8 +56,8 @@ void mousePressed(){
 }
 void mouseDragged(){
   if(mouseButton == LEFT && selectedVertex != null){
-    selectedVertex.getButton().setX(selectedVertex.getButton().getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
-    selectedVertex.getButton().setY(selectedVertex.getButton().getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
+    selectedVertex.getLabel().setX(selectedVertex.getLabel().getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
+    selectedVertex.getLabel().setY(selectedVertex.getLabel().getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
   }
 }
 void mouseReleased(){
