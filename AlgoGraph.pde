@@ -48,11 +48,10 @@ Vertex getIntersectingVertex(float x, float y){
   return null;
 }
 void mousePressed(){
-  if(mouseButton == LEFT){
-    Vertex v = getIntersectingVertex(mouseX, mouseY);//get vertex clicked
-    if(v != null)
-        selectedVertex = v;
-
+  Button b = vertexMenu.getIntersectingButton(mouseX,mouseY);
+  if(mouseButton == LEFT && b == null ){
+      vertexMenu.hide();
+    selectedVertex = getIntersectingVertex(mouseX, mouseY);//get vertex clicked
   }
 }
 void mouseDragged(){
