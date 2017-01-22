@@ -4,7 +4,9 @@ interface ButtonInterface{
 class Button{
   
   public Button(int x,int y, int w, int h,String text, int textSize){
-    this.label = new Label( x,y, w, h, 0, 200,200, text,  textSize);
+    this.label = new Label( x,y, w, h,  text,  textSize);
+    label.setTextRGB( 10, 20,0);
+
     actionInterface = null;
   }
   public Button(Button other){

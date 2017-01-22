@@ -4,11 +4,15 @@ public UndirectedGraph getDFS(UndirectedGraph graph, Vertex a){
     for(Vertex v : graph.getVertexSet())
       visitedMap.put(v, false);
     visitedMap.put(a, true); //mark vertex as visited
-    return getSubGraphDFS(a, graph, visitedMap);
+    UndirectedGraph dfs= getSubGraphDFS(a, graph, visitedMap);
+    if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size())
+      return dfs;
+    return graph; //failed to generate graph
   }
   
   public UndirectedGraph getSubGraphDFS(Vertex root, UndirectedGraph graph, HashMap<Vertex, Boolean> visitedMap){
-        UndirectedGraph bfs = new UndirectedGraph();
+  
+    UndirectedGraph bfs = new UndirectedGraph();
 
     for(Edge e: graph.getAdjacentEdges(root)){ //for each adjacent edge
        if(!visitedMap.get(e.getDest())){ //if dest is not visited

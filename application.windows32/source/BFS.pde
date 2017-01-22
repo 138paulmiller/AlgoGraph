@@ -18,5 +18,7 @@ public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
         }
       }
     }
-    return bfs;
+    if(bfs.getVertexSet().size() == graph.getVertexSet().size())
+      return bfs;
+    return graph; //failed to generate graph
   }

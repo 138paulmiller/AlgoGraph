@@ -5,11 +5,18 @@ class Vertex implements Comparable<Vertex>{
   }
   public Vertex(int x, int y, char id){
     this.id = id;
-    this.label = new Label(x,y,32,32,  0, 230,230, String.valueOf(this.id), 30);
+    this.label = new Label(x,y,32,32, String.valueOf(this.id), 30);
+        label.setTextRGB( 10, 20,0);
+
+    label.setRGB( 0, 230,230);
   }
   public Vertex(int x, int y, int id){
        this.id = char(id);
-    this.label = new Label(x,y,32,32,  0, 230,230, String.valueOf(this.id), 30);
+    this.label = new Label(x,y,32,32, String.valueOf(this.id), 30);
+    label.setTextRGB( 10, 20,0);
+    label.setRGB( 0, 230,230);
+
+
    
   }
   public Vertex (Vertex other){

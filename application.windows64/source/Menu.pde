@@ -10,6 +10,9 @@ class Menu{
   }
   void hide(){
      visible = false;
+     for(Button b : buttons){
+         b.getLabel().setHighlight(false);
+       }
   }
   void open(){
      visible = true;
@@ -35,9 +38,11 @@ class Menu{
     buttons.getLast().getLabel().setRGB(red,green,blue);
   }
   Button getIntersectingButton(float x, float y){
-    for(Button b : buttons){
-      if(b.getLabel().intersects(x,y)){
-         return b; //return vertex 
+    if(isOpen()){
+      for(Button b : buttons){
+        if(b.getLabel().intersects(x,y)){
+           return b; //return vertex 
+        }
       }
     }
   return null;

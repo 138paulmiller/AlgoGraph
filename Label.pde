@@ -1,19 +1,39 @@
 class Label{
-  public Label(int x,int y, int w, int h, int r, int g, int b,  String text, int textSize){
+  public Label(int x,int y, int w, int h, String text, int textSize){
     this.x= x;
     this.y= y;
     this.w= w;
     this.h= h;
-    this.r= r;
-    this.g= g;
-    this.b= b;
     this.text =  text;
-  this.textSize = textSize;
-  highlight = false;
+    this.textSize = textSize;
+    this.r = this.tr = 255;
+    this.g = this.tg = 255;
+    this.b = this.tb = 255;
+    filled=  true;
+    highlight = false;
+
+
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Vertex) && (this.getX() == ((Label)o).getX() && 
                                        this.text == ((Label)o).getText());
+  }
+  public Label(Label other){
+    this.x= other.x;
+    this.y= other.y;
+    this.w= other.w;
+    this.h= other.h;
+    this.text =  other.text;
+    this.textSize = other.textSize;
+    this.highlight = other.highlight;
+    this.r = other.r;
+    this.tr = other.tr;
+    this.g = other.g;
+    this.tg = other.tg;
+    this.b = other.b;
+    this.tb = other.tb;
+    this.filled = other.filled;
+
   }
   public String getText(){
    return text;
@@ -32,6 +52,17 @@ class Label{
    }
    public float getH(){
      return h;
+   }
+   public void setText(String text){
+     if(text != null)
+     this.text= text;
+   }
+   public void setFilled(boolean isFilled){
+      filled = isFilled; 
+   }
+   public void setPosition(int x, int y){
+    setX(x); 
+    setY(y); 
    }
    public void setX(float x ){
      this.x = x;
@@ -66,27 +97,39 @@ class Label{
      this.g = g;
      this.b = b;
   }
+  public void setTextRGB(float tr,float tg,float tb){
+     this.tr = tr;
+     this.tg = tg;
+     this.tb = tb;
+  }
   public void draw(){
-   pushMatrix();
     
+     pushMatrix();
     //render pos in eucledian space
-    stroke(0,0,0);  //pen stroke color black to outline button
-    if(highlight){
-      fill(g,b,g);     //file  rect with swapped color to highlight
-    }else{
-      fill(r,g,b);
-    }//file  rect with same color
-    //offset to center
-    rect(x,y,w,h);
+    if(filled){
+      stroke(0,0,0);  //pen stroke color black to outline button
+      if(highlight){
+        fill(255,255,0);     //file  rect with yellow to highlight
+      }else{
+        fill(r,g,b);
+      }
+    }
+    else{
+      noStroke();  
+      noFill();
+    }
     
+   rect(x,y,w,h);  
+    
+     
     //render label on top
     textSize(textSize);
-    fill(2, 2,0); //nearly black text 
+    fill(tr,tg,tb);
     text(text, x+w*0.20,y+h*0.80);
     popMatrix();
   }
-  float x,y,w,h,r,g,b;
+  float x,y,w,h,r,g,b, t,tr,tb,tg;
   String text;
   float textSize;
-  boolean highlight;
+  boolean highlight, filled;
 }
