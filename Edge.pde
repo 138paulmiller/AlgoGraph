@@ -1,5 +1,5 @@
 
-class Edge extends Label implements Comparable<Edge>{
+class Edge extends Label {
   public Edge(){
     super(0,0,0,0,"",0);
    this.source = null;

@@ -1,4 +1,4 @@
-class Vertex extends Label implements Comparable<Vertex>  {
+class Vertex extends Label {
   public Vertex(){
     super(0,0,0,0,"",0);
   }
@@ -18,9 +18,6 @@ class Vertex extends Label implements Comparable<Vertex>  {
     this.id = char(id);
     setTextRGB( 10, 20,0);
     setRGB( 0, 230,230);
-
-
-   
   }
   
   public int getID(){

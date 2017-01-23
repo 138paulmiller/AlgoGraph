@@ -2,7 +2,9 @@ import java.util.HashMap;
 class UIManager{
   public UIManager(){
   menus = new HashMap <String, Menu>();
-  labels = new HashMap <String, Label>();
+  vertices = new HashMap <String, Vertex>();
+    edges = new HashMap <String, Edge>();
+
   }
   public void addMenu(String id, int w, int h){
    menus.put(id,new Menu(w,h));    
@@ -12,11 +14,15 @@ class UIManager{
   }
   public void addLabel(String id, Label l){
     if(l != null)
-   labels.put(id, l);  
+    if(l instanceof Vertex)
+       vertices.put(id, (Vertex)l);  
+    else if(l instanceof Edge)
+       edges.put(id, (Edge)l); 
   }
   public void setLabelInterface(String id, ActionInterface actionInterface){
-   
-   Label l = labels.get(id);
+   Label l = vertices.get(id);
+   if(l== null)
+     l = edges.get(id);
    if(l != null)
      l.setInterface(actionInterface);  
   }
@@ -24,8 +30,10 @@ class UIManager{
     return menus.get(id); 
   }
   public void draw(){
-    for(Label l : labels.values())
-       l.draw();
+    for(Edge e : edges.values())
+       e.draw();
+    for(Vertex v : vertices.values())
+       v.draw();
      for(Menu m : menus.values())
        m.draw();
       
@@ -34,7 +42,14 @@ class UIManager{
     Label l = null;
      
      //check if point intersects any labels 
-    Iterator it = labels.values().iterator();
+    Iterator it = vertices.values().iterator();
+    while(l==null && it.hasNext()){
+      Label t = (Label)it.next(); 
+      if(t.intersects(x,y)){
+        l = t;
+      }
+    }
+    it = edges.values().iterator();
     while(l==null && it.hasNext()){
       Label t = (Label)it.next(); 
       if(t.intersects(x,y)){
@@ -53,6 +68,8 @@ class UIManager{
   }
   
  HashMap <String, Menu> menus;
- HashMap <String, Label> labels;
+ HashMap <String, Edge> edges;
+  HashMap <String, Vertex> vertices;
+
  String selectedMenu, selectedLabel;
 }
