@@ -27,7 +27,7 @@ class Edge extends Label {
     this.weight = other.weight;
   }
   public int compareTo(Edge e){
-    int val =  weight - e.weight;
+    int val = weight -  e.weight;
     if( val == 0) //order by vertex dest if equal
       val = dest.compareTo(e.getDest());    
     return val;

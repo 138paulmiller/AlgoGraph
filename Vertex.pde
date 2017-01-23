@@ -25,7 +25,7 @@ class Vertex extends Label {
   }
   
   public int compareTo(Vertex v){
-     return id - v.getID();
+     return id - v.getID() ;
   }
  
   public boolean equals(Object o) {

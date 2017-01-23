@@ -63,16 +63,16 @@ class UIManager{
      //check if point intersects any labels 
     Iterator it = graph.getVertexSet().iterator();
     while(l==null && it.hasNext()){
-      Label t = (Label)it.next(); 
-      if(t.intersects(x,y)){
-        l = t;
+      Vertex v = (Vertex)it.next(); 
+      if(v.intersects(x,y)){
+        l = v;
       }
     }
     it = graph.getEdgeSet().iterator();
     while(l==null && it.hasNext()){
-      Label t = (Label)it.next(); 
-      if(t.intersects(x,y)){
-        l = t;
+      Edge v = (Edge)it.next(); 
+      if(v.intersects(x,y)){
+        l = v;
       }
     }
     //check menu labels if intersecting label still not found

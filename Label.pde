@@ -24,7 +24,7 @@ public class Label implements Comparable<Label>{
       return ((Vertex)this).compareTo(((Vertex)o));
     else if(o instanceof Button)
       return ((Button)this).compareTo(((Button)o));
-    else if(o instanceof Vertex)
+    else if(o instanceof Edge)
       return ((Edge)this).compareTo(((Edge)o));
      else
        return -1;

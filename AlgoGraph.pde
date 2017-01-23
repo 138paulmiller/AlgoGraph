@@ -216,7 +216,12 @@ void initDefaultGraph(){
   undirgraph.addEdge(g,e, 1); 
   undirgraph.addEdge(g,a, 1); 
   undirgraph.addEdge(g,b, 1); 
-  undirgraph.updateEdgeWeight(a,b,10); 
-
+  undirgraph.updateEdgeWeight(a,c,10); 
+    print("\nVertices:\n");
+  for(Vertex v : undirgraph.getVertexSet())
+    print(" " + v.getText());
+  print("\nEdges:\n");
+  for(Edge edge : undirgraph.getEdgeSet())
+    print("("+edge.getSource().getText() + " "  + edge.getDest().getText() + " :" + edge.getText() + ")" );
   ui.setGraph(undirgraph);
 }
