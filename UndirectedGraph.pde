@@ -31,7 +31,13 @@ class UndirectedGraph{
 
     }
   }
-  
+  public Vertex getVertex(String id){
+    for(Vertex v: getVertexSet()){
+     if(String.valueOf(v.getID()) == id)
+       return v;
+    }
+    return null;
+  }
   public void draw(){
      
     for(HashMap.Entry<Vertex,TreeSet<Edge>> entry : edgeMap.entrySet()){
