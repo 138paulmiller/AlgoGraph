@@ -13,25 +13,25 @@ Vertex selectedVertex = null, draggingVertex = null;
 void setup(){
   size(1080, 720);
   initDefaultGraph();
-  vertexMenu.addButton("BFS", new ButtonInterface(){
+  vertexMenu.addButton("BFS", new ActionInterface(){
                                     public void onClick(){
                                       undirgraph = getBFS(undirgraph,selectedVertex);
                                       
                                     }
                               });
-  vertexMenu.addButton("DFS", new ButtonInterface(){
+  vertexMenu.addButton("DFS", new ActionInterface(){
                                     public void onClick(){
                                       undirgraph = getDFS(undirgraph,selectedVertex);
                                     }
                               });
-  graphMenu.addButton("ADD VERTEX", new ButtonInterface(){
+  graphMenu.addButton("ADD VERTEX", new ActionInterface(){
                             public void onClick(){
                               deselectAll();
                               vertexAdd = true;
                               print("To add vertex anywhere");
                             }
                       });
-  graphMenu.addButton("ADD EDGE", new ButtonInterface(){
+  graphMenu.addButton("ADD EDGE", new ActionInterface(){
                                     public void onClick(){
                                       deselectAll();
                                       edgeSelection = true;
@@ -58,6 +58,9 @@ void mouseClicked(){
   //if vertex right clicked
   if(mouseButton == RIGHT){ //right click vertex to show vertexMenu
     deselectAll();//default deselect o n riight click
+    //hide all menus by default
+    graphMenu.hide();//hide other menus  
+    vertexMenu.hide();
     if(v != null){
         vertexMenu.setPosition(mouseX, mouseY);
         vertexMenu.open();
@@ -78,34 +81,36 @@ void mouseClicked(){
   }
   //if button left clicked
   else if(mouseButton == LEFT){
+    graphMenu.unhighlight();//hide other menus  
+    vertexMenu.unhighlight();
       if(selectedVertex != null){
         if(vertexB != null){ //if vertexMenu button click action for vertex
-          print("\nClicked Vertex Menu Button: "+  vertexB.getLabel().getText());
+          print("\nClicked Vertex Menu Button: "+  vertexB.getText());
           vertexB.click();
           vertexMenu.hide();//hide menus  
 
         }
       }// end if ther is a selected vertex for vertex menu
       else if(graphB != null){
-            print("\nClicked Graph Menu Button: "+  graphB.getLabel().getText());
+            print("\nClicked Graph Menu Button: "+  graphB.getText());
             graphB.click();
-            graphB.getLabel().setHighlight(true);
-
+            graphB.setHighlight(true);
        }//end if graph button was clicked
        else if(v != null){ //if left vertex clicked
           if(edgeSelection){ //if selecting menu vertex
              if( vertexSource == null){
                 vertexSource = v;
-               print("\nSource: " + v.getLabel().getText());
-               v.getLabel().setHighlight(true);
+               print("\nSource: " + v);
+               v.setHighlight(true);
+              
              }else{//if this is the second vertex clicked
                vertexDest = v;
-               print("\nDest: " + v.getLabel().getText());   
-               vertexSource.getLabel().setHighlight(false);
+               print("\nDest: " + v.getText());   
+               vertexSource.setHighlight(false);
                undirgraph.addEdge(vertexSource,vertexDest, 1);
                vertexDest = vertexSource = null;
                edgeSelection = false;
-               graphMenu.hide();//hide menus 
+               graphMenu.hide();
              }
           }
      }//end if vertex left click
@@ -131,7 +136,7 @@ void mouseClicked(){
 }
 Vertex getIntersectingVertex(float x, float y){
   for(Vertex v : undirgraph.getVertexSet()){
-      if(v.getLabel().intersects(x,y)){
+      if(v.intersects(x,y)){
          return v; //return vertex 
       }
   }
@@ -165,8 +170,8 @@ void mousePressed(){
 }
 void mouseDragged(){
   if(mouseButton == LEFT && draggingVertex != null){
-    draggingVertex.getLabel().setX(draggingVertex.getLabel().getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
-    draggingVertex.getLabel().setY(draggingVertex.getLabel().getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
+    draggingVertex.setX(draggingVertex.getX() + mouseX - pmouseX); //move by difference of previous mouse and current mouse
+    draggingVertex.setY(draggingVertex.getY() + mouseY - pmouseY); //move by difference of previous mouse and current mouse
   }
 }
 void mouseReleased(){
@@ -206,7 +211,7 @@ void initDefaultGraph(){
   undirgraph.addEdge(g,e, 1); 
   undirgraph.addEdge(g,a, 1); 
   undirgraph.addEdge(g,b, 1); 
-  undirgraph.updateEdgeWeight(a,c,10); 
+  undirgraph.updateEdgeWeight(a,b,10); 
 
   for(Vertex v : undirgraph.getVertexSet())
     print(char(v.getID()) + "\n");

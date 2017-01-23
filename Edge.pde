@@ -9,8 +9,8 @@ class Edge implements Comparable<Edge>{
    this.source = source;
    this.dest = dest;
    this.weight = weight;
-   label = new Label((int)(source.getLabel().getX()+dest.getLabel().getX())/2,//x
-                     (int)(source.getLabel().getY()+ dest.getLabel().getY())/2, //y
+   label = new Label((int)(source.getX()+dest.getX())/2,//x
+                     (int)(source.getY()+ dest.getY())/2, //y
                     64, 32,//w, h/rgb
                     String.valueOf(weight), 30);
    label.setRGB(130,120,0);
@@ -58,9 +58,9 @@ class Edge implements Comparable<Edge>{
       //draw line from source to dest
       stroke(103,45,0);
       strokeWeight(4);
-      line(source.getLabel().getX(),source.getLabel().getY(),dest.getLabel().getX(),dest.getLabel().getY());
-      label.setPosition((int)(source.getLabel().getX()+dest.getLabel().getX())/2,//x
-                     (int)(source.getLabel().getY()+ dest.getLabel().getY())/2);
+      line(source.getX(),source.getY(),dest.getX(),dest.getY());
+      label.setPosition((int)(source.getX()+dest.getX())/2,//x
+                     (int)(source.getY()+ dest.getY())/2);
       label.draw();
       popMatrix();
     }

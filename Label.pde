@@ -1,4 +1,7 @@
-class Label{
+interface ActionInterface{
+    void onClick();
+  }
+public class Label{
   public Label(int x,int y, int w, int h, String text, int textSize){
     this.x= x;
     this.y= y;
@@ -11,8 +14,7 @@ class Label{
     this.b = this.tb = 255;
     filled=  true;
     highlight = false;
-
-
+    actionInterface = null;
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Vertex) && (this.getX() == ((Label)o).getX() && 
@@ -33,6 +35,7 @@ class Label{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
+    this.actionInterface = other.actionInterface;
 
   }
   public String getText(){
@@ -102,6 +105,13 @@ class Label{
      this.tg = tg;
      this.tb = tb;
   }
+   public void setInterface(ActionInterface actionInterface){
+   this.actionInterface = actionInterface; 
+  }
+  public void click(){
+  if(actionInterface !=  null)
+     actionInterface.onClick();
+  }
   public void draw(){
     
      pushMatrix();
@@ -117,11 +127,9 @@ class Label{
     else{
       noStroke();  
       noFill();
-    }
-    
+    }    
    rect(x,y,w,h);  
-    
-     
+       
     //render label on top
     textSize(textSize);
     fill(tr,tg,tb);
@@ -132,4 +140,6 @@ class Label{
   String text;
   float textSize;
   boolean highlight, filled;
+  ActionInterface actionInterface;
+
 }
