@@ -107,6 +107,8 @@ void mouseClicked(){
       else if(graphB != null){
             print("\nClicked Graph Menu Button: "+  graphB.getText());
             graphB.click();
+            ui.hideAllMenus();
+            ui.openMenu("graph");
             graphB.setHighlight(true);
        }//end if graph button was clicked
        else if(v != null){ //if left vertex clicked
