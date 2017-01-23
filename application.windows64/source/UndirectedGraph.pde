@@ -1,4 +1,5 @@
 import java.util.Set;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Collections;
@@ -45,11 +46,58 @@ class UndirectedGraph{
     Collections.sort(sortList);
     return sortList;
   }
-  
+  public Edge getEdge(Vertex source, Vertex dest){
+    TreeSet<Edge> edgeSet = edgeMap.get(source);
+    boolean found = false;
+    Edge e  = null;
+    Iterator it = edgeSet.iterator();
+    while(it.hasNext() && !found){
+      e= (Edge)it.next();
+      if(e.getSource() == source && e.getDest() == dest){
+        found  =true;
+      } 
+    }
+    if(found)
+    return e;
+    else  
+    return null;
+  }
+  public void updateEdgeWeight(Vertex source, Vertex dest, int weight){
+    TreeSet<Edge>sourceEdgeSet = edgeMap.get(source);
+    TreeSet<Edge>destEdgeSet = edgeMap.get(dest);
+
+    boolean found = false;
+    Edge e = null;
+    Iterator it = sourceEdgeSet.iterator();
+    while(it.hasNext() && !found){
+      e= (Edge)it.next();
+      if(e.getDest() == dest){
+          e.setWeight(weight);
+          found = true;
+      }
+    }
+    found = false;
+    //update destinations edges
+    it = destEdgeSet.iterator();
+    while(it.hasNext() && !found){
+      e= (Edge)it.next();
+      if(e.getDest() == source){
+          e.setWeight(weight);
+          found = true;
+      }
+    }
+  }
   public ArrayList<Edge> getAdjacentEdges(Vertex v){
      ArrayList<Edge> sortList = new ArrayList<Edge>(edgeMap.get(v)); 
      Collections.sort(sortList);
      return sortList;
+  }
+  public ArrayList<Edge> getEdgeSet(){
+    ArrayList<Edge> sortList = new ArrayList<Edge>();
+    for(Vertex v : getVertexSet())
+     sortList.addAll(edgeMap.get(v)); 
+   Collections.sort(sortList);
+   return sortList;
   }
   public void clear(){
      edgeMap.clear(); 

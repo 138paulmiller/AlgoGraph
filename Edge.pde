@@ -1,28 +1,30 @@
 
-class Edge implements Comparable<Edge>{
-  public Edge( ){
+class Edge extends Label implements Comparable<Edge>{
+  public Edge(){
+    super(0,0,0,0,"",0);
    this.source = null;
    this.dest = null;
     this.weight = 0;
   }
   public Edge(Vertex source, Vertex dest, int weight){
+      super((int)(source.getX()+dest.getX())/2,//x
+                       (int)(source.getY()+ dest.getY())/2, //y
+                      64, 32,//w, h/rgb
+                      String.valueOf(weight), 30);
    this.source = source;
    this.dest = dest;
    this.weight = weight;
-   label = new Label((int)(source.getX()+dest.getX())/2,//x
-                     (int)(source.getY()+ dest.getY())/2, //y
-                    64, 32,//w, h/rgb
-                    String.valueOf(weight), 30);
-   label.setRGB(130,120,0);
-   label.setTextRGB(0,190,10);
-   label.setFilled(false);      
+   
+   setRGB(130,120,0);
+   setTextRGB(0,190,10);
+   setFilled(false);      
     
   }
   public Edge(Edge other){
+   super(other);
    this.source = other.source;
    this.dest = other.dest;
     this.weight = other.weight;
-    this.label = other.label;
   }
   public int compareTo(Edge e){
     int val =  weight - e.weight;
@@ -41,12 +43,10 @@ class Edge implements Comparable<Edge>{
   public Vertex getDest() {
       return dest;
   }
-  public Label getLabel(){
-    return label;
-  }
+ 
   public void setWeight(int weight){
     this.weight = weight;
-    this.label.setText(String.valueOf(weight));
+    setText(String.valueOf(weight));
   }
   public int getWeight(){
   return weight;
@@ -59,13 +59,12 @@ class Edge implements Comparable<Edge>{
       stroke(103,45,0);
       strokeWeight(4);
       line(source.getX(),source.getY(),dest.getX(),dest.getY());
-      label.setPosition((int)(source.getX()+dest.getX())/2,//x
+      setPosition((int)(source.getX()+dest.getX())/2,//x
                      (int)(source.getY()+ dest.getY())/2);
-      label.draw();
+      super.draw();
       popMatrix();
     }
   }
   Vertex source,dest;
-  Label label;
   int weight;
 }

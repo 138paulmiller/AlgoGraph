@@ -10,9 +10,11 @@ class Menu{
   }
   void hide(){
      visible = false;
-     for(Button b : buttons){
-         b.getLabel().setHighlight(false);
-       }
+    unhighlight();
+  }
+  public void unhighlight(){
+     for(Button b : buttons)
+         b.setHighlight(false);
   }
   void open(){
      visible = true;
@@ -25,22 +27,22 @@ class Menu{
     this.y = y;
     int i = 0;
     for(Button b : buttons){ //update button position
-       b.getLabel().setX(x);
-       b.getLabel().setY(y+(h*i++));
+       b.setX(x);
+       b.setY(y+(h*i++));
      }
   }
-  void addButton(String label, ButtonInterface buttonInterface){
+  void addButton(String label, ActionInterface actionInterface){
     
     int count = buttons.size();
     Button b = new Button(x,y+(h*count),w,h, label, 18);
-    b.setInterface(buttonInterface);
+    b.setInterface(actionInterface);
     buttons.addLast(b);
-    buttons.getLast().getLabel().setRGB(red,green,blue);
+    buttons.getLast().setRGB(red,green,blue);
   }
   Button getIntersectingButton(float x, float y){
     if(isOpen()){
       for(Button b : buttons){
-        if(b.getLabel().intersects(x,y)){
+        if(b.intersects(x,y)){
            return b; //return vertex 
         }
       }

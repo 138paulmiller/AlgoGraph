@@ -18,7 +18,7 @@ public UndirectedGraph getDFS(UndirectedGraph graph, Vertex a){
        if(!visitedMap.get(e.getDest())){ //if dest is not visited
          visitedMap.put(e.getDest(), true); //mark vertex as visited
          bfs.addGraph(getSubGraphDFS(e.getDest(),graph, visitedMap)) ;  //add to traversal queue
-         bfs.addEdge(e.getSource(),e.getDest(),e.weight);   
+         bfs.addEdge(e.getSource(),e.getDest(),e.getWeight());   
         }
       }
     return bfs;

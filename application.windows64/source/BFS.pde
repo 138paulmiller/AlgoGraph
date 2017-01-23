@@ -14,7 +14,7 @@ public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
        if(!visitedMap.get(e.getDest())){ //if dest is not visited
          visitedMap.put(e.getDest(), true); //mark vertex as visited
          q.addFirst(e.getDest());  //add to traversal queue
-         bfs.addEdge(e.getSource(),e.getDest(),e.weight);   
+         bfs.addEdge(e.getSource(),e.getDest(),e.getWeight());   
         }
       }
     }

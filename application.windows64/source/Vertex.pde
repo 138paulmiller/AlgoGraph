@@ -1,23 +1,28 @@
-class Vertex implements Comparable<Vertex>{
+class Vertex extends Label implements Comparable<Vertex>  {
   public Vertex(){
-   this.label = null;
-
-  }
-  public Vertex(int x, int y, char id){
-    this.id = id;
-    this.label = new Label(x,y,32,32,  0, 230,230, String.valueOf(this.id), 30);
-  }
-  public Vertex(int x, int y, int id){
-       this.id = char(id);
-    this.label = new Label(x,y,32,32,  0, 230,230, String.valueOf(this.id), 30);
-   
+    super(0,0,0,0,"",0);
   }
   public Vertex (Vertex other){
-    this.label = getLabel();
-
+   super(other);
     this.id = other.id;
 
   }
+  public Vertex(int x, int y, char id){
+    super(x,y,32,32, String.valueOf(id), 30);
+    this.id = id;
+    setTextRGB( 10, 20,0);
+     setRGB( 0, 230,230);
+  }
+  public Vertex(int x, int y, int id){
+    super(x,y,32,32, String.valueOf(id), 30);
+    this.id = char(id);
+    setTextRGB( 10, 20,0);
+    setRGB( 0, 230,230);
+
+
+   
+  }
+  
   public int getID(){
     return id;
   }
@@ -26,18 +31,11 @@ class Vertex implements Comparable<Vertex>{
      return id - v.getID();
   }
  
-  @Override public boolean equals(Object o) {
-      return (o instanceof Vertex) && (this.getLabel() == ((Vertex)o).getLabel() && 
-                                       this.id == ((Vertex)o).getID());
+  public boolean equals(Object o) {
+      return (o instanceof Vertex) && (this.id == ((Vertex)o).getID());
   }
-  public Label getLabel(){
-    return label;
-  }
-  void draw(){
-    if(label != null)
-      label.draw();
-  }
-  Label label;
+ 
+ 
   char id;
 
 

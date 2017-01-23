@@ -12,7 +12,7 @@ class UndirectedGraph{
     edgeMap = other.edgeMap;
   }
   public void addVertex(Vertex a){
-     if(!edgeMap.containsKey(a)){
+     if(a != null && !edgeMap.containsKey(a)){
        edgeMap.put(a, new TreeSet<Edge>());
      }
   }
@@ -20,6 +20,7 @@ class UndirectedGraph{
     edgeMap.putAll(graph.edgeMap);
   }
   public void addEdge(Vertex source,Vertex dest, int weight){
+    if(source == null && dest == null) return;
    Edge e = new Edge(source,dest,weight);
    Edge eComp = new Edge(dest, source,weight);
    addVertex(source);      
