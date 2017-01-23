@@ -14,9 +14,9 @@ class UIManager{
  public void setGraph(UndirectedGraph graph){
     this.graph = graph; 
  }
-  public void setVertexInterface(String id, ActionInterface actionInterface){
-   Label l = graph.getVertex(id);
-   l.setInterface(actionInterface);  
+  public void setVertexInterface(ActionInterface actionInterface){
+   for(Vertex v: graph.getVertexSet())
+     v.setInterface(actionInterface);  
   }
   public void setEdgeInterface(String sourceId, String destId,  ActionInterface actionInterface){
    Vertex source = graph.getVertex(sourceId);
@@ -35,12 +35,16 @@ class UIManager{
   }
   public void hideMenu(String id){
     Menu m=getMenu(id);
-    if( m != null)
-      m.hide();   
+    if( m != null){
+      m.hide(); 
+      m.unhighlight();
+    } 
   }
   public void hideAllMenus(){
-   for(Menu m : menus.values())
-     m.hide();
+   for(Menu m : menus.values()){
+      m.hide(); 
+      m.unhighlight();
+    } 
   }
   public void clear(){
     menus.clear();

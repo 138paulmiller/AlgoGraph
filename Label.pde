@@ -1,5 +1,5 @@
 interface ActionInterface{
-    void onClick();
+    void onClick(String text);
   }
 public class Label implements Comparable<Label>{
   public Label(int x,int y, int w, int h, String text, int textSize){
@@ -119,7 +119,7 @@ public class Label implements Comparable<Label>{
   }
   public void click(){
   if(actionInterface !=  null)
-     actionInterface.onClick();
+     actionInterface.onClick(text);
   }
   public void draw(){
     

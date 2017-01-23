@@ -15,14 +15,16 @@ void setup(){
   ui.addMenu("vertex",72,32);
   ui.addMenu("graph",150,32);
   ui.addMenuButton("vertex", "BFS", new ActionInterface(){
-                                    public void onClick(){
+                                    public void onClick(String text){
+                                      print("\nClicked : " + text);
                                       undirgraph = getBFS(undirgraph,selectedVertex);
-                                          ui.setGraph(undirgraph);
+                                      ui.setGraph(undirgraph);
 
                                     }
                               });
   ui.addMenuButton("vertex","DFS", new ActionInterface(){
-                                    public void onClick(){
+                                    public void onClick(String text){
+                                      print("\nClicked : " + text);
                                       undirgraph = getDFS(undirgraph,selectedVertex);
                                           ui.setGraph(undirgraph);
 
@@ -30,19 +32,27 @@ void setup(){
                               });
                               
    ui.addMenuButton("graph","ADD VERTEX", new ActionInterface(){
-                            public void onClick(){
+                           public void onClick(String text){
+                              print("\nClicked : " + text);
                               deselectAll();
                               vertexAdd = true;
                               print("To add vertex anywhere");
                             }
                       });
    ui.addMenuButton("graph","ADD EDGE", new ActionInterface(){
-                                    public void onClick(){
+                                    public void onClick(String text){
+                                      print("\nClicked : " + text);
                                       deselectAll();
                                       edgeSelection = true;
                                       print("To add edge, click on 2 Vertices");
                                     }
                               });
+    ui.setVertexInterface(new ActionInterface(){
+          public void onClick(String text){
+            print("\nClicked : " + text);
+            
+          }
+    });
 
 }
 
@@ -73,39 +83,34 @@ void mouseClicked(){
     ui.hideAllMenus();
     if(v != null){
         ui.getMenu("vertex").setPosition(mouseX, mouseY);
+
         ui.openMenu("vertex");
-        ui.hideMenu("graph");//hide other menus  
         selectedVertex = v;
       }else if(e != null){//edge clicked   
        edgeValueBuilder = new String();
        print("\nSelected Edge : " + e.getText());
-       ui.hideMenu("graph");//hide menus  
-       ui.hideMenu("vertex");//hide menus
      }
       else if(graphB == null){ //right click empty space
         ui.getMenu("graph").setPosition(mouseX, mouseY);
-        ui.openMenu("graph");//open graph menu
-         ui.hideMenu("vertex");//hide other menus  
+         ui.openMenu("graph");//open graph menu
       }
-
   }
   //if button left clicked
   else if(mouseButton == LEFT){
-    ui.getMenu("graph").unhighlight();//hide other menus  
-    ui.getMenu("vertex").unhighlight();
-      if(selectedVertex != null){
+    
         if(vertexB != null){ //if ui.getMenu("vertex") button click action for vertex
           print("\nClicked Vertex Menu Button: "+  vertexB.getText());
           vertexB.click();
           ui.hideMenu("vertex");//hide menus  
         }
-      }// end if ther is a selected vertex for vertex menu
+      // end if ther is a selected vertex for vertex menu
       else if(graphB != null){
             print("\nClicked Graph Menu Button: "+  graphB.getText());
             graphB.click();
             graphB.setHighlight(true);
        }//end if graph button was clicked
        else if(v != null){ //if left vertex clicked
+         v.click();
           if(edgeSelection){ //if selecting menu vertex
              if( vertexSource == null){
                 vertexSource = v;
@@ -117,7 +122,6 @@ void mouseClicked(){
                print("\nDest: " + v.getText());   
                vertexSource.setHighlight(false);
                undirgraph.addEdge(vertexSource,vertexDest, 1);
-               Edge edge = undirgraph.getEdge(vertexSource, vertexDest);
                vertexDest = vertexSource = null;
                edgeSelection = false;
                ui.hideMenu("graph");
@@ -125,7 +129,9 @@ void mouseClicked(){
           }
      }//end if vertex left click
      else if(e != null){ //edge left click
-        print("\nClicked edge Value: " + e.getText());   
+            ui.hideAllMenus();
+           print("\nEdge Clicked " + e.getText());
+
      }
      else{ //sp;ace left click
       print("\nPos Clicked " + mouseX + " , " + mouseY);
@@ -158,7 +164,6 @@ void mousePressed(){
   Label label = ui.getIntersectingLabel(mouseX, mouseY);
   if(mouseButton == LEFT){
     if(label instanceof Vertex){
-      print("Label type Vertex pressed");
       ui.hideMenu("vertex");
       draggingVertex = (Vertex)label;//get vertex clicked
     }
@@ -211,5 +216,5 @@ void initDefaultGraph(){
   undirgraph.addEdge(g,b, 1); 
   undirgraph.updateEdgeWeight(a,b,10); 
 
-    ui.setGraph(undirgraph);
+  ui.setGraph(undirgraph);
 }

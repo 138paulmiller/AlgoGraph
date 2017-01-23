@@ -1,7 +1,7 @@
 interface ActionInterface{
     void onClick();
   }
-public class Label{
+public class Label implements Comparable<Label>{
   public Label(int x,int y, int w, int h, String text, int textSize){
     this.x= x;
     this.y= y;
@@ -17,8 +17,17 @@ public class Label{
     actionInterface = null;
   }
   @Override public boolean equals(Object o) {
-      return (o instanceof Vertex) && (this.getX() == ((Label)o).getX() && 
-                                       this.text == ((Label)o).getText());
+      return (o instanceof Label) && ( this.text == ((Label)o).getText());
+  }
+  @Override public int compareTo(Label o) {
+    if(o instanceof Vertex)
+      return ((Vertex)this).compareTo(((Vertex)o));
+    else if(o instanceof Button)
+      return ((Button)this).compareTo(((Button)o));
+    else if(o instanceof Vertex)
+      return ((Edge)this).compareTo(((Edge)o));
+     else
+       return -1;
   }
   public Label(Label other){
     this.x= other.x;
