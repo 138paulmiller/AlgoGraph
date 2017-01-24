@@ -14,7 +14,9 @@ class Edge extends Label {
    this.source = source;
    this.dest = dest;
    this.weight = weight;
-   
+   lr = 103;
+   lg = 45;
+   lb = 0;
    setRGB(130,120,0);
    setTextRGB(0,190,10);
    setFilled(false);      
@@ -48,6 +50,11 @@ class Edge extends Label {
     this.weight = weight;
     setText(String.valueOf(weight));
   }
+   public void setLineRGB(int r,int g,int b){
+    this.lr = r;
+    this.lg = g;
+    this.lb = b;
+  }
   public int getWeight(){
   return weight;
   }
@@ -56,7 +63,7 @@ class Edge extends Label {
     if(hasVertices()){
       pushMatrix();
       //draw line from source to dest
-      stroke(103,45,0);
+      stroke(lr,lg,lb);
       strokeWeight(4);
       line(source.getX(),source.getY(),dest.getX(),dest.getY());
       setPosition((int)(source.getX()+dest.getX())/2,//x
@@ -66,5 +73,6 @@ class Edge extends Label {
     }
   }
   Vertex source,dest;
+  int lr,lg,lb;
   int weight;
 }
