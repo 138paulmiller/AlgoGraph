@@ -39,6 +39,8 @@ public HashMap<Vertex,UndirectedGraph> getShortestPaths(UndirectedGraph graph, V
     while(e != null){
       print("  " + e.getSource().getText());
       paths.get((Vertex)entry.getKey()).addEdge(e.getSource(), e.getDest(), e.getWeight());
+
+
       e = prev.get(e.getSource());
     }
   }

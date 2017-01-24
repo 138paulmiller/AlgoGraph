@@ -63,7 +63,11 @@ class Edge extends Label {
     if(hasVertices()){
       pushMatrix();
       //draw line from source to dest
-      stroke(lr,lg,lb);
+      if(highlight)
+        stroke(lb,lg,lr);
+
+      else
+        stroke(lr,lg,lb);
       strokeWeight(4);
       line(source.getX(),source.getY(),dest.getX(),dest.getY());
       setPosition((int)(source.getX()+dest.getX())/2,//x

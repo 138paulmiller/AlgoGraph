@@ -7,9 +7,14 @@ import java.util.Collections;
 class UndirectedGraph{
   public UndirectedGraph(){
     edgeMap = new HashMap<Vertex,TreeSet<Edge>> ();
+    drawVertices = drawEdges = true;
   }
   public UndirectedGraph(UndirectedGraph other){
     edgeMap = other.edgeMap;
+    drawVertices = other.drawVertices;
+        drawEdges = other.drawEdges;
+
+    
   }
   public void addVertex(Vertex a){
      if(a != null && !edgeMap.containsKey(a)){
@@ -31,6 +36,20 @@ class UndirectedGraph{
 
     }
   }
+  public void setDrawVertices(boolean drawVertices){
+    this.drawVertices = drawVertices;
+  }
+  public void setDrawEdges(boolean drawEdges){
+    this.drawEdges = drawEdges;
+  }
+  public void setHighlightEdges(boolean isHighlighted){
+   for(Edge e:getEdgeSet())
+     e.setHighlight(isHighlighted);
+  }
+  public void setHighlightVertices(boolean isHighlighted){
+   for(Vertex v: getVertexSet())
+     v.setHighlight(isHighlighted);
+  }
   public Vertex getVertex(String id){
     for(Vertex v: getVertexSet()){
      if(String.valueOf(v.getID()) == id)
@@ -40,13 +59,13 @@ class UndirectedGraph{
   }
   public void draw(){
      
-    for(HashMap.Entry<Vertex,TreeSet<Edge>> entry : edgeMap.entrySet()){
-     for(Edge e :  entry.getValue()){
-       e.draw();
-     }
-    }
-    for(Vertex v: getVertexSet())
-      v.draw();
+    if(drawEdges)
+       for(Edge e : getEdgeSet())
+         e.draw();
+
+    if(drawVertices)
+      for(Vertex v: getVertexSet())
+        v.draw();
   }
   public ArrayList<Vertex> getVertexSet(){
     ArrayList<Vertex> sortList=  new ArrayList(edgeMap.keySet());
@@ -110,4 +129,5 @@ class UndirectedGraph{
      edgeMap.clear(); 
   }
   HashMap<Vertex,TreeSet<Edge>> edgeMap;
+  boolean drawVertices, drawEdges;
 }

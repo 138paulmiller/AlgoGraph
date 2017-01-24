@@ -2,29 +2,30 @@ import java.util.HashMap;
 class UIManager{
   public UIManager(){
   menus = new HashMap <String, Menu>();
-  graph = null;
+  graphs = new HashMap <String, UndirectedGraph>();
 
   }
   public void addMenu(String id, int w, int h){
    menus.put(id,new Menu(w,h));    
   }
-  public void addMenuButton(String menuId, String buttonId, ActionInterface actionInterface){
-   getMenu(menuId).addButton(buttonId, actionInterface);  
+  public void addMenuButton(String menuId, String buttonId, LabelInterface labelInterface){
+   getMenu(menuId).addButton(buttonId, labelInterface);  
   }
- public void setGraph(UndirectedGraph graph){
-    this.graph = graph; 
+ public void setGraph(String id, UndirectedGraph graph){
+    this.graphs.put(id,graph); 
  }
-  public void setVertexInterface(ActionInterface actionInterface){
-   for(Vertex v: graph.getVertexSet())
-     v.setInterface(actionInterface);  
+  public void setLabelInterface(String graphId,LabelInterface labelInterface){
+    UndirectedGraph g = graphs.get(graphId);
+    if(g != null){
+      for(Edge e: g.getEdgeSet())
+           e.setInterface(labelInterface);  
+  
+      for(Vertex v: g.getVertexSet())
+       v.setInterface(labelInterface);  
+    }
   }
-  public void setEdgeInterface(String sourceId, String destId,  ActionInterface actionInterface){
-   Vertex source = graph.getVertex(sourceId);
-   Vertex dest = graph.getVertex(destId);
-    Edge edge = graph.getEdge(source, dest);
-    if(edge != null)
-     edge.setInterface(actionInterface);  
-  }
+  
+  
   public Menu getMenu(String id){
     return menus.get(id); 
   }
@@ -47,47 +48,54 @@ class UIManager{
     } 
   }
   public void clear(){
+    
     menus.clear();
-    graph.clear();
-    selectedLabel = selectedMenu = "";
+    for(UndirectedGraph g : graphs.values())
+      g.clear();
   }
-  public void draw(){
-      graph.draw();
+  public void draw(String id){
+    UndirectedGraph g = graphs.get(id);
+    if(g != null)g.draw();
+  }
+  public void drawMenus(){
      for(Menu m : menus.values())
-       m.draw();
-      
+       m.draw();    
   }
   public Label getIntersectingLabel(float x, float y){
     Label l = null;
-     
-     //check if point intersects any labels 
-    Iterator it = graph.getVertexSet().iterator();
-    while(l==null && it.hasNext()){
-      Vertex v = (Vertex)it.next(); 
-      if(v.intersects(x,y)){
-        l = v;
+    Iterator itX =graphs.values().iterator();
+    while(l == null && itX.hasNext()){    
+    if(g != null){
+      UndirectedGraph g = (UndirectedGraph)itX.next();
+       //check if point intersects any labels 
+        Iterator itY =g.getVertexSet().iterator();
+        while(l==null && itY.hasNext()){
+          Vertex v = (Vertex)itY.next(); 
+          if(v.intersects(x,y)){
+            l = v;
+          }
+        }
+        itY = g.getEdgeSet().iterator();
+        while(l==null && itY.hasNext()){
+          Edge v = (Edge)itY.next(); 
+          if(v.intersects(x,y)){
+            l = v;
+          }
+        }
+        //check menu labels if intersecting label still not found
+        itY = menus.values().iterator();
+        while(l==null && itY.hasNext()){
+          Button b = ((Menu)itY.next()).getIntersectingButton(x,y); 
+          if(b != null){
+            l = b;
+          }
+        }
       }
-    }
-    it = graph.getEdgeSet().iterator();
-    while(l==null && it.hasNext()){
-      Edge v = (Edge)it.next(); 
-      if(v.intersects(x,y)){
-        l = v;
-      }
-    }
-    //check menu labels if intersecting label still not found
-    it = menus.values().iterator();
-    while(l==null && it.hasNext()){
-      Button b = ((Menu)it.next()).getIntersectingButton(x,y); 
-      if(b != null){
-        l = b;
-      }
-    }
+    }//end while not found
      return l; 
+
   }
   
  HashMap <String, Menu> menus;
- UndirectedGraph graph;
-
- String selectedMenu, selectedLabel;
+ HashMap <String, UndirectedGraph>  graphs;
 }
