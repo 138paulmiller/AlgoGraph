@@ -19,7 +19,7 @@ void setup(){
                                             print("\nClicked : " +  l.getText());
                                             UndirectedGraph g = getBFS(undirgraph,selectedVertex);
                                             if(g != null){
-                                              g.setDrawVertices(false);
+                                              //g.setDrawVertices(false);
                                               g.setHighlightEdges(true);
                                               ui.setGraph("BFS",g);
                                               currentGraphAction ="BFS";
@@ -95,8 +95,13 @@ void setup(){
 void draw(){
  background(0); 
  //undirgraph.draw();
-  ui.draw("UNDIR");
-  ui.draw(currentGraphAction);
+ UndirectedGraph g =  ui.getGraph("UNDIR");
+ if(g != null)g.drawEdges(); //draw edges first
+  g = ui.getGraph(currentGraphAction);
+  if(g != null)g.drawEdges();  //draw highlighted edges for graph of current action
+  g = ui.getGraph("UNDIR");
+  if(g != null)g.drawVertices(); //draw draw vertices of all edges
+
   ui.drawMenus();
 
 }
@@ -238,7 +243,7 @@ void getDijkstra(){
  print("\nGenerating Graph of shortest path from : " + vertexStart.getText() + " -> " + vertexEnd.getText());
       UndirectedGraph g  = getShortestPath(undirgraph,vertexStart,vertexEnd);   
       if(g != null){
-        g.setDrawVertices(false);
+        //g.setDrawVertices(false);
         g.setHighlightEdges(true);
         ui.setGraph("DIJK",g);
         currentGraphAction = "DIJK";

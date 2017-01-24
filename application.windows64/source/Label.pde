@@ -1,5 +1,5 @@
-interface ActionInterface{
-    void onClick();
+interface LabelInterface{
+    void onClick(Label l);
   }
 public class Label implements Comparable<Label>{
   public Label(int x,int y, int w, int h, String text, int textSize){
@@ -14,7 +14,7 @@ public class Label implements Comparable<Label>{
     this.b = this.tb = 255;
     filled=  true;
     highlight = false;
-    actionInterface = null;
+    labelInterface = null;
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Label) && ( this.text == ((Label)o).getText());
@@ -24,7 +24,7 @@ public class Label implements Comparable<Label>{
       return ((Vertex)this).compareTo(((Vertex)o));
     else if(o instanceof Button)
       return ((Button)this).compareTo(((Button)o));
-    else if(o instanceof Vertex)
+    else if(o instanceof Edge)
       return ((Edge)this).compareTo(((Edge)o));
      else
        return -1;
@@ -44,7 +44,7 @@ public class Label implements Comparable<Label>{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
-    this.actionInterface = other.actionInterface;
+    this.labelInterface = other.labelInterface;
 
   }
   public String getText(){
@@ -114,12 +114,12 @@ public class Label implements Comparable<Label>{
      this.tg = tg;
      this.tb = tb;
   }
-   public void setInterface(ActionInterface actionInterface){
-   this.actionInterface = actionInterface; 
+   public void setInterface(LabelInterface labelInterface){
+   this.labelInterface = labelInterface; 
   }
   public void click(){
-  if(actionInterface !=  null)
-     actionInterface.onClick();
+  if(labelInterface !=  null)
+     labelInterface.onClick(this);
   }
   public void draw(){
     
@@ -149,6 +149,6 @@ public class Label implements Comparable<Label>{
   String text;
   float textSize;
   boolean highlight, filled;
-  ActionInterface actionInterface;
+  LabelInterface labelInterface;
 
 }

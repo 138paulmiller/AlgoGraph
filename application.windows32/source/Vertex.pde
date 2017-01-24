@@ -5,7 +5,6 @@ class Vertex extends Label {
   public Vertex (Vertex other){
    super(other);
     this.id = other.id;
-
   }
   public Vertex(int x, int y, char id){
     super(x,y,32,32, String.valueOf(id), 30);
@@ -25,7 +24,7 @@ class Vertex extends Label {
   }
   
   public int compareTo(Vertex v){
-     return id - v.getID();
+     return id - v.getID() ;
   }
  
   public boolean equals(Object o) {
@@ -34,6 +33,5 @@ class Vertex extends Label {
  
  
   char id;
-
 
 }

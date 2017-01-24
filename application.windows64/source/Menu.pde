@@ -10,7 +10,7 @@ class Menu{
   }
   void hide(){
      visible = false;
-    unhighlight();
+   // unhighlight();
   }
   public void unhighlight(){
      for(Button b : buttons)
@@ -31,11 +31,11 @@ class Menu{
        b.setY(y+(h*i++));
      }
   }
-  void addButton(String label, ActionInterface actionInterface){
+  void addButton(String label, LabelInterface labelInterface){
     
     int count = buttons.size();
     Button b = new Button(x,y+(h*count),w,h, label, 18);
-    b.setInterface(actionInterface);
+    b.setInterface(labelInterface);
     buttons.addLast(b);
     buttons.getLast().setRGB(red,green,blue);
   }

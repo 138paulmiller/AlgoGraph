@@ -53,9 +53,8 @@ class UIManager{
     for(UndirectedGraph g : graphs.values())
       g.clear();
   }
-  public void draw(String id){
-    UndirectedGraph g = graphs.get(id);
-    if(g != null)g.draw();
+  public UndirectedGraph getGraph(String id){
+    return graphs.get(id);
   }
   public void drawMenus(){
      for(Menu m : menus.values())

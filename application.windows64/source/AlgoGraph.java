@@ -28,55 +28,104 @@ public class AlgoGraph extends PApplet {
 
 float red = 0, green =250,blue = 140;
 float buttonWidth =250 , buttonHeight = 32;
-String noneLabel ="NONE";
-String bfsLabel = "BFS";
-Vertex vertexSource, vertexDest;
+String currentGraphAction = "";
+Vertex vertexSource, vertexDest, vertexStart,vertexEnd;
 boolean vertexAdd, edgeSelection;
 UIManager ui = new UIManager();
 String edgeValueBuilder =null;
 UndirectedGraph undirgraph = new UndirectedGraph();
+
 Vertex selectedVertex = null, draggingVertex = null;
 public void setup(){
   
   initDefaultGraph();
   ui.addMenu("vertex",72,32);
   ui.addMenu("graph",150,32);
-  ui.addMenuButton("vertex", "BFS", new ActionInterface(){
-                                    public void onClick(){
-                                      undirgraph = getBFS(undirgraph,selectedVertex);
-                                          ui.setGraph(undirgraph);
-
-                                    }
-                              });
-  ui.addMenuButton("vertex","DFS", new ActionInterface(){
-                                    public void onClick(){
-                                      undirgraph = getDFS(undirgraph,selectedVertex);
-                                          ui.setGraph(undirgraph);
-
-                                    }
-                              });
+  ui.addMenuButton("vertex", "BFS", new LabelInterface(){
+                                          public void onClick(Label l){
+                                            print("\nClicked : " +  l.getText());
+                                            UndirectedGraph g = getBFS(undirgraph,selectedVertex);
+                                            if(g != null){
+                                              g.setDrawVertices(false);
+                                              g.setHighlightEdges(true);
+                                              ui.setGraph("BFS",g);
+                                              currentGraphAction ="BFS";
+                                            }
+      
+                                          }
+                                    });
+  ui.addMenuButton("vertex","DFS", new LabelInterface(){
+                                          public void onClick(Label l){
+                                            print("\nClicked : " +  l.getText());
+                                            UndirectedGraph g = getDFS(undirgraph,selectedVertex);
+                                            if(g != null)
+                                              g.setHighlightEdges(true);
+                                              ui.setGraph("DFS",g);
+                                              currentGraphAction = "DFS";
+                                            }
+                                    });
+    ui.addMenuButton("vertex","START", new LabelInterface(){
+                                            public void onClick(Label l){
+                                              print("\nClicked : " +  l.getText());
+                                              if(vertexStart != null)
+                                                vertexStart.setHighlight(false); //unhighlight old vertex selection
+                                              vertexStart = selectedVertex;
+                                              vertexStart.setHighlight(true);
+                                              getDijkstra();
+                                            }
+                                      });
+    ui.addMenuButton("vertex","END", new LabelInterface(){
+                                            public void onClick(Label l){
+                                              print("\nClicked : " + l.getText());
+                                              if(vertexEnd != null)
+                                                vertexEnd.setHighlight(false); //unhighlight old vertex selection
+                                              vertexEnd = selectedVertex;
+                                              vertexEnd.setHighlight(true);
+                                              getDijkstra();
+                                            }
+                                      });
                               
-   ui.addMenuButton("graph","ADD VERTEX", new ActionInterface(){
-                            public void onClick(){
-                              deselectAll();
-                              vertexAdd = true;
-                              print("To add vertex anywhere");
-                            }
-                      });
-   ui.addMenuButton("graph","ADD EDGE", new ActionInterface(){
-                                    public void onClick(){
-                                      deselectAll();
-                                      edgeSelection = true;
-                                      print("To add edge, click on 2 Vertices");
-                                    }
-                              });
+   ui.addMenuButton("graph","ADD VERTEX", new LabelInterface(){
+                                               public void onClick(Label l){
+                                                  print("\nClicked : " + l.getText());
+                                                  deselectAll();
+                                                  vertexAdd = true;
+                                                  print("To add vertex anywhere");
+                                                }
+                                          });
+   ui.addMenuButton("graph","ADD EDGE", new LabelInterface(){
+                                              public void onClick(Label l){
+                                                print("\nClicked : " + l.getText());
+                                                deselectAll();
+                                                edgeSelection = true;
+                                                print("To add edge, click on 2 Vertices");
+                                              }
+                                        });
+                              
+    ui.setLabelInterface("UNDIR",new LabelInterface(){
+          public void onClick(Label l){
+            if(l instanceof Vertex)
+                print("\nClicked Vertex: " + l.getText());
+            else if(l instanceof Button)
+                print("\nClicked Button: " + l.getText());
+            else if(l instanceof Edge)
+                print("\nClicked Edge: " + l.getText());
+            else
+                print("\nClicked Label: " + l.getText());
+
+            
+          }
+    });
 
 }
 
 public void draw(){
  background(0); 
  //undirgraph.draw();
- ui.draw();
+  ui.draw("UNDIR");
+  ui.draw(currentGraphAction);
+  ui.drawMenus();
+
 }
 public void mouseClicked(){
   Label l = ui.getIntersectingLabel(mouseX, mouseY);//get vertex clicked
@@ -101,38 +150,36 @@ public void mouseClicked(){
     if(v != null){
         ui.getMenu("vertex").setPosition(mouseX, mouseY);
         ui.openMenu("vertex");
-        ui.hideMenu("graph");//hide other menus  
         selectedVertex = v;
       }else if(e != null){//edge clicked   
        edgeValueBuilder = new String();
        print("\nSelected Edge : " + e.getText());
-       ui.hideMenu("graph");//hide menus  
-       ui.hideMenu("vertex");//hide menus
      }
       else if(graphB == null){ //right click empty space
         ui.getMenu("graph").setPosition(mouseX, mouseY);
-        ui.openMenu("graph");//open graph menu
-         ui.hideMenu("vertex");//hide other menus  
+         ui.openMenu("graph");//open graph menu
       }
-
   }
   //if button left clicked
   else if(mouseButton == LEFT){
-    ui.getMenu("graph").unhighlight();//hide other menus  
-    ui.getMenu("vertex").unhighlight();
-      if(selectedVertex != null){
+    
         if(vertexB != null){ //if ui.getMenu("vertex") button click action for vertex
           print("\nClicked Vertex Menu Button: "+  vertexB.getText());
+          
+          vertexB.setHighlight(true);
           vertexB.click();
           ui.hideMenu("vertex");//hide menus  
         }
-      }// end if ther is a selected vertex for vertex menu
+      // end if ther is a selected vertex for vertex menu
       else if(graphB != null){
             print("\nClicked Graph Menu Button: "+  graphB.getText());
             graphB.click();
+            ui.hideAllMenus();
+            ui.openMenu("graph");
             graphB.setHighlight(true);
        }//end if graph button was clicked
        else if(v != null){ //if left vertex clicked
+         v.click();
           if(edgeSelection){ //if selecting menu vertex
              if( vertexSource == null){
                 vertexSource = v;
@@ -144,7 +191,6 @@ public void mouseClicked(){
                print("\nDest: " + v.getText());   
                vertexSource.setHighlight(false);
                undirgraph.addEdge(vertexSource,vertexDest, 1);
-               Edge edge = undirgraph.getEdge(vertexSource, vertexDest);
                vertexDest = vertexSource = null;
                edgeSelection = false;
                ui.hideMenu("graph");
@@ -152,21 +198,24 @@ public void mouseClicked(){
           }
      }//end if vertex left click
      else if(e != null){ //edge left click
-        print("\nClicked edge Value: " + e.getText());   
+            ui.hideAllMenus();
+           print("\nEdge Clicked " + e.getText());
+
      }
      else{ //sp;ace left click
       print("\nPos Clicked " + mouseX + " , " + mouseY);
-       ui.hideAllMenus();
        if(vertexSource != null){
          vertexSource.setHighlight(false);
          vertexSource = null;
        }
-       if(vertexAdd){ //if adding action, add verte
+       else if(vertexAdd){ //if adding action, add verte
           print("\nAdding:" + mouseX + " , " + mouseY);
           Vertex newV = new Vertex(mouseX, mouseY, PApplet.parseChar('A'+ undirgraph.getVertexSet().size()));
           undirgraph.addVertex(newV);// add vertex of id one beyond size
           vertexAdd = false;
+       }else{
        }
+       ui.hideAllMenus();
        deselectAll();       
      }
 
@@ -179,13 +228,11 @@ public void deselectAll(){
   vertexAdd = false;
   edgeSelection = false; 
   
-
 }
 public void mousePressed(){
   Label label = ui.getIntersectingLabel(mouseX, mouseY);
   if(mouseButton == LEFT){
     if(label instanceof Vertex){
-      print("Label type Vertex pressed");
       ui.hideMenu("vertex");
       draggingVertex = (Vertex)label;//get vertex clicked
     }
@@ -213,7 +260,22 @@ public void keyPressed(){
    initDefaultGraph();
  }
 }
-
+public void getDijkstra(){
+  if(vertexStart  != null && vertexEnd != null){
+ print("\nGenerating Graph of shortest path from : " + vertexStart.getText() + " -> " + vertexEnd.getText());
+      UndirectedGraph g  = getShortestPath(undirgraph,vertexStart,vertexEnd);   
+      if(g != null){
+        g.setDrawVertices(false);
+        g.setHighlightEdges(true);
+        ui.setGraph("DIJK",g);
+        currentGraphAction = "DIJK";
+        vertexStart.setHighlight(false);
+        vertexEnd.setHighlight(false);
+        vertexStart = null;
+        vertexEnd = null;
+      }    
+  }
+}
 public void initDefaultGraph(){
   undirgraph.clear();
    Vertex a = new Vertex(440,294,'A');
@@ -223,22 +285,33 @@ public void initDefaultGraph(){
   Vertex e = new Vertex(900,90,'E');
   Vertex f = new Vertex(105,85,'F');
   Vertex g = new Vertex(330,220,'G');
-  undirgraph.addEdge(a,b, 1);
-  undirgraph.addEdge(a,c, 1);
-  undirgraph.addEdge(a,d, 1);
-  undirgraph.addEdge(d,c, 1);
-  undirgraph.addEdge(d,b, 1);  
-  undirgraph.addEdge(d,e, 1); 
-  undirgraph.addEdge(f,c, 1);
-  undirgraph.addEdge(f,b, 1);  
-  undirgraph.addEdge(f,e, 1); 
-  undirgraph.addEdge(f,g, 1); 
-  undirgraph.addEdge(g,e, 1); 
-  undirgraph.addEdge(g,a, 1); 
-  undirgraph.addEdge(g,b, 1); 
-  undirgraph.updateEdgeWeight(a,b,10); 
-
-    ui.setGraph(undirgraph);
+  undirgraph.addEdge(a,b, 14);
+  undirgraph.addEdge(a,c, 34);
+  undirgraph.addEdge(a,d, 56);
+  undirgraph.addEdge(d,c, 12);
+  undirgraph.addEdge(d,b, 3);  
+  undirgraph.addEdge(d,e, 66); 
+  undirgraph.addEdge(f,c, 77);
+  undirgraph.addEdge(f,b, 15);  
+  undirgraph.addEdge(f,e, 45); 
+  undirgraph.addEdge(f,g, 27); 
+  undirgraph.addEdge(g,e, 98); 
+  undirgraph.addEdge(g,a, 45); 
+  undirgraph.addEdge(g,b, 11); 
+  undirgraph.updateEdgeWeight(a,c,10); 
+    print("\nVertices:\n");
+  for(Vertex v : undirgraph.getVertexSet())
+    print(" " + v.getText());
+  print("\nEdges:\n");
+  for(Edge edge : undirgraph.getEdgeSet())
+    print("("+edge.getSource().getText() + " "  + edge.getDest().getText() + " :" + edge.getText() + ")" );
+  ui.setGraph("UNDIR",undirgraph);
+}
+interface ActionInterface{
+ public void onLabelClicked(Label label  );
+}
+public class ActionHandler{
+ 
 }
 
 public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
@@ -301,6 +374,59 @@ public UndirectedGraph getDFS(UndirectedGraph graph, Vertex a){
       }
     return bfs;
   }
+    
+public HashMap<Vertex,UndirectedGraph> getShortestPaths(UndirectedGraph graph, Vertex initial){
+  HashMap<Vertex,UndirectedGraph>  paths = new HashMap<Vertex, UndirectedGraph>();
+  TreeSet<Vertex> q = new TreeSet<Vertex>();
+  HashMap<Vertex, Integer> dist = new HashMap<Vertex, Integer>();;
+  HashMap<Vertex, Edge> prev  = new HashMap<Vertex, Edge>(); //previous vertex for vertex's shortest path,
+  for(Vertex v : graph.getVertexSet()){ //adds vertices in graphs given vertex order
+    dist.put(v,Integer.MAX_VALUE-1);
+    prev.put(v,null);
+    q.add(v);
+  }//for each vertex
+  dist.put(initial, 0);
+  print("\nInitializeded structures ");
+
+  while(!q.isEmpty()){
+    //fin min vertex, if equal the first vertex to have lowest is assigned as min
+    Vertex min = null;
+    for(Vertex v : q){
+      if(min == null) min=v;
+      int diff = dist.get(v) - dist.get(min);
+        if(diff < 0)
+          min = v; //assign new min
+    }
+    //u is min
+    q.remove(min); //remove meaning visited
+    for(Edge edge : graph.getAdjacentEdges(min)){
+      int newDist = dist.get(min) + edge.getWeight(); //get distance from u to v
+      if(newDist < dist.get(edge.getDest())){ //if new distance is smaller than current distance to v
+          dist.put(edge.getDest(), newDist);
+          prev.put(edge.getDest(),edge);
+      }
+    }//end for adjacent edges              
+  }//end while q ! empty
+  for(HashMap.Entry entry : dist.entrySet()){ //for each vertex
+    print("\nVertex : " + ((Vertex)entry.getKey()).getText() + " Dist: " + dist.get((Vertex)entry.getKey()) + " - " );
+    paths.put((Vertex)entry.getKey(), new UndirectedGraph());
+    Vertex a = (Vertex)entry.getKey();
+    Edge e = prev.get(a);
+    while(e != null){
+      print("  " + e.getSource().getText());
+      paths.get((Vertex)entry.getKey()).addEdge(e.getSource(), e.getDest(), e.getWeight());
+
+
+      e = prev.get(e.getSource());
+    }
+  }
+  return paths;
+}
+
+public UndirectedGraph getShortestPath(UndirectedGraph graph,Vertex start, Vertex end){
+  return getShortestPaths(graph, start).get(end);
+ 
+}
 
 class Edge extends Label {
   public Edge(){
@@ -317,7 +443,9 @@ class Edge extends Label {
    this.source = source;
    this.dest = dest;
    this.weight = weight;
-   
+   lr = 103;
+   lg = 45;
+   lb = 0;
    setRGB(130,120,0);
    setTextRGB(0,190,10);
    setFilled(false);      
@@ -330,7 +458,7 @@ class Edge extends Label {
     this.weight = other.weight;
   }
   public int compareTo(Edge e){
-    int val =  weight - e.weight;
+    int val = weight -  e.weight;
     if( val == 0) //order by vertex dest if equal
       val = dest.compareTo(e.getDest());    
     return val;
@@ -351,6 +479,11 @@ class Edge extends Label {
     this.weight = weight;
     setText(String.valueOf(weight));
   }
+   public void setLineRGB(int r,int g,int b){
+    this.lr = r;
+    this.lg = g;
+    this.lb = b;
+  }
   public int getWeight(){
   return weight;
   }
@@ -359,7 +492,11 @@ class Edge extends Label {
     if(hasVertices()){
       pushMatrix();
       //draw line from source to dest
-      stroke(103,45,0);
+      if(highlight)
+        stroke(lb,lg,lr);
+
+      else
+        stroke(lr,lg,lb);
       strokeWeight(4);
       line(source.getX(),source.getY(),dest.getX(),dest.getY());
       setPosition((int)(source.getX()+dest.getX())/2,//x
@@ -369,10 +506,11 @@ class Edge extends Label {
     }
   }
   Vertex source,dest;
+  int lr,lg,lb;
   int weight;
 }
-interface ActionInterface{
-    public void onClick();
+interface LabelInterface{
+    public void onClick(Label l);
   }
 public class Label implements Comparable<Label>{
   public Label(int x,int y, int w, int h, String text, int textSize){
@@ -387,7 +525,7 @@ public class Label implements Comparable<Label>{
     this.b = this.tb = 255;
     filled=  true;
     highlight = false;
-    actionInterface = null;
+    labelInterface = null;
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Label) && ( this.text == ((Label)o).getText());
@@ -397,7 +535,7 @@ public class Label implements Comparable<Label>{
       return ((Vertex)this).compareTo(((Vertex)o));
     else if(o instanceof Button)
       return ((Button)this).compareTo(((Button)o));
-    else if(o instanceof Vertex)
+    else if(o instanceof Edge)
       return ((Edge)this).compareTo(((Edge)o));
      else
        return -1;
@@ -417,7 +555,7 @@ public class Label implements Comparable<Label>{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
-    this.actionInterface = other.actionInterface;
+    this.labelInterface = other.labelInterface;
 
   }
   public String getText(){
@@ -487,12 +625,12 @@ public class Label implements Comparable<Label>{
      this.tg = tg;
      this.tb = tb;
   }
-   public void setInterface(ActionInterface actionInterface){
-   this.actionInterface = actionInterface; 
+   public void setInterface(LabelInterface labelInterface){
+   this.labelInterface = labelInterface; 
   }
   public void click(){
-  if(actionInterface !=  null)
-     actionInterface.onClick();
+  if(labelInterface !=  null)
+     labelInterface.onClick(this);
   }
   public void draw(){
     
@@ -522,7 +660,7 @@ public class Label implements Comparable<Label>{
   String text;
   float textSize;
   boolean highlight, filled;
-  ActionInterface actionInterface;
+  LabelInterface labelInterface;
 
 }
 
@@ -537,7 +675,7 @@ class Menu{
   }
   public void hide(){
      visible = false;
-    unhighlight();
+   // unhighlight();
   }
   public void unhighlight(){
      for(Button b : buttons)
@@ -558,11 +696,11 @@ class Menu{
        b.setY(y+(h*i++));
      }
   }
-  public void addButton(String label, ActionInterface actionInterface){
+  public void addButton(String label, LabelInterface labelInterface){
     
     int count = buttons.size();
     Button b = new Button(x,y+(h*count),w,h, label, 18);
-    b.setInterface(actionInterface);
+    b.setInterface(labelInterface);
     buttons.addLast(b);
     buttons.getLast().setRGB(red,green,blue);
   }
@@ -592,29 +730,30 @@ class Menu{
 class UIManager{
   public UIManager(){
   menus = new HashMap <String, Menu>();
-  graph = null;
+  graphs = new HashMap <String, UndirectedGraph>();
 
   }
   public void addMenu(String id, int w, int h){
    menus.put(id,new Menu(w,h));    
   }
-  public void addMenuButton(String menuId, String buttonId, ActionInterface actionInterface){
-   getMenu(menuId).addButton(buttonId, actionInterface);  
+  public void addMenuButton(String menuId, String buttonId, LabelInterface labelInterface){
+   getMenu(menuId).addButton(buttonId, labelInterface);  
   }
- public void setGraph(UndirectedGraph graph){
-    this.graph = graph; 
+ public void setGraph(String id, UndirectedGraph graph){
+    this.graphs.put(id,graph); 
  }
-  public void setVertexInterface(String id, ActionInterface actionInterface){
-   Label l = graph.getVertex(id);
-   l.setInterface(actionInterface);  
+  public void setLabelInterface(String graphId,LabelInterface labelInterface){
+    UndirectedGraph g = graphs.get(graphId);
+    if(g != null){
+      for(Edge e: g.getEdgeSet())
+           e.setInterface(labelInterface);  
+  
+      for(Vertex v: g.getVertexSet())
+       v.setInterface(labelInterface);  
+    }
   }
-  public void setEdgeInterface(String sourceId, String destId,  ActionInterface actionInterface){
-   Vertex source = graph.getVertex(sourceId);
-   Vertex dest = graph.getVertex(destId);
-    Edge edge = graph.getEdge(source, dest);
-    if(edge != null)
-     edge.setInterface(actionInterface);  
-  }
+  
+  
   public Menu getMenu(String id){
     return menus.get(id); 
   }
@@ -625,57 +764,68 @@ class UIManager{
   }
   public void hideMenu(String id){
     Menu m=getMenu(id);
-    if( m != null)
-      m.hide();   
+    if( m != null){
+      m.hide(); 
+      m.unhighlight();
+    } 
   }
   public void hideAllMenus(){
-   for(Menu m : menus.values())
-     m.hide();
+   for(Menu m : menus.values()){
+      m.hide(); 
+      m.unhighlight();
+    } 
   }
   public void clear(){
+    
     menus.clear();
-    graph.clear();
-    selectedLabel = selectedMenu = "";
+    for(UndirectedGraph g : graphs.values())
+      g.clear();
   }
-  public void draw(){
-      graph.draw();
+  public void draw(String id){
+    UndirectedGraph g = graphs.get(id);
+    if(g != null)g.draw();
+  }
+  public void drawMenus(){
      for(Menu m : menus.values())
-       m.draw();
-      
+       m.draw();    
   }
   public Label getIntersectingLabel(float x, float y){
     Label l = null;
-     
-     //check if point intersects any labels 
-    Iterator it = graph.getVertexSet().iterator();
-    while(l==null && it.hasNext()){
-      Label t = (Label)it.next(); 
-      if(t.intersects(x,y)){
-        l = t;
+    Iterator itX =graphs.values().iterator();
+    while(l == null && itX.hasNext()){    
+    if(g != null){
+      UndirectedGraph g = (UndirectedGraph)itX.next();
+       //check if point intersects any labels 
+        Iterator itY =g.getVertexSet().iterator();
+        while(l==null && itY.hasNext()){
+          Vertex v = (Vertex)itY.next(); 
+          if(v.intersects(x,y)){
+            l = v;
+          }
+        }
+        itY = g.getEdgeSet().iterator();
+        while(l==null && itY.hasNext()){
+          Edge v = (Edge)itY.next(); 
+          if(v.intersects(x,y)){
+            l = v;
+          }
+        }
+        //check menu labels if intersecting label still not found
+        itY = menus.values().iterator();
+        while(l==null && itY.hasNext()){
+          Button b = ((Menu)itY.next()).getIntersectingButton(x,y); 
+          if(b != null){
+            l = b;
+          }
+        }
       }
-    }
-    it = graph.getEdgeSet().iterator();
-    while(l==null && it.hasNext()){
-      Label t = (Label)it.next(); 
-      if(t.intersects(x,y)){
-        l = t;
-      }
-    }
-    //check menu labels if intersecting label still not found
-    it = menus.values().iterator();
-    while(l==null && it.hasNext()){
-      Button b = ((Menu)it.next()).getIntersectingButton(x,y); 
-      if(b != null){
-        l = b;
-      }
-    }
+    }//end while not found
      return l; 
+
   }
   
  HashMap <String, Menu> menus;
- UndirectedGraph graph;
-
- String selectedMenu, selectedLabel;
+ HashMap <String, UndirectedGraph>  graphs;
 }
 
 
@@ -686,9 +836,14 @@ class UIManager{
 class UndirectedGraph{
   public UndirectedGraph(){
     edgeMap = new HashMap<Vertex,TreeSet<Edge>> ();
+    drawVertices = drawEdges = true;
   }
   public UndirectedGraph(UndirectedGraph other){
     edgeMap = other.edgeMap;
+    drawVertices = other.drawVertices;
+        drawEdges = other.drawEdges;
+
+    
   }
   public void addVertex(Vertex a){
      if(a != null && !edgeMap.containsKey(a)){
@@ -710,6 +865,20 @@ class UndirectedGraph{
 
     }
   }
+  public void setDrawVertices(boolean drawVertices){
+    this.drawVertices = drawVertices;
+  }
+  public void setDrawEdges(boolean drawEdges){
+    this.drawEdges = drawEdges;
+  }
+  public void setHighlightEdges(boolean isHighlighted){
+   for(Edge e:getEdgeSet())
+     e.setHighlight(isHighlighted);
+  }
+  public void setHighlightVertices(boolean isHighlighted){
+   for(Vertex v: getVertexSet())
+     v.setHighlight(isHighlighted);
+  }
   public Vertex getVertex(String id){
     for(Vertex v: getVertexSet()){
      if(String.valueOf(v.getID()) == id)
@@ -719,13 +888,13 @@ class UndirectedGraph{
   }
   public void draw(){
      
-    for(HashMap.Entry<Vertex,TreeSet<Edge>> entry : edgeMap.entrySet()){
-     for(Edge e :  entry.getValue()){
-       e.draw();
-     }
-    }
-    for(Vertex v: getVertexSet())
-      v.draw();
+    if(drawEdges)
+       for(Edge e : getEdgeSet())
+         e.draw();
+
+    if(drawVertices)
+      for(Vertex v: getVertexSet())
+        v.draw();
   }
   public ArrayList<Vertex> getVertexSet(){
     ArrayList<Vertex> sortList=  new ArrayList(edgeMap.keySet());
@@ -789,6 +958,7 @@ class UndirectedGraph{
      edgeMap.clear(); 
   }
   HashMap<Vertex,TreeSet<Edge>> edgeMap;
+  boolean drawVertices, drawEdges;
 }
 class Vertex extends Label {
   public Vertex(){
@@ -797,7 +967,6 @@ class Vertex extends Label {
   public Vertex (Vertex other){
    super(other);
     this.id = other.id;
-
   }
   public Vertex(int x, int y, char id){
     super(x,y,32,32, String.valueOf(id), 30);
@@ -817,7 +986,7 @@ class Vertex extends Label {
   }
   
   public int compareTo(Vertex v){
-     return id - v.getID();
+     return id - v.getID() ;
   }
  
   public boolean equals(Object o) {
@@ -826,7 +995,6 @@ class Vertex extends Label {
  
  
   char id;
-
 
 }
   public void settings() {  size(1080, 720); }

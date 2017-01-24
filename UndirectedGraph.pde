@@ -57,11 +57,13 @@ class UndirectedGraph{
     }
     return null;
   }
-  public void draw(){
+  public void drawEdges(){
      
     if(drawEdges)
        for(Edge e : getEdgeSet())
          e.draw();
+  }
+  public void drawVertices(){
 
     if(drawVertices)
       for(Vertex v: getVertexSet())
