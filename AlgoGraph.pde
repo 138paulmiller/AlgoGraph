@@ -82,6 +82,7 @@ void setup(){
             if(l instanceof Vertex){
                 print("\nLeft Clicked Vertex: " + l.getText());
                 if(currentAction == ""){ //if no action
+                  ui.hideAllMenus();
                   updateSelectedVertex((Vertex)l); //update as normal
                 }else if(currentAction == "path"){ //left clicked vertex is selected as root
                   if(selectedVertex != null){
@@ -129,6 +130,7 @@ void addGraph(String id, UndirectedGraph graph){
 void onRightClick(int x, int  y){ //right click nothing 
     print("\nRight Clicked");
     ui.hideAllMenus();
+    updateSelectedVertex(null);//unselect vertices
     Menu m = ui.getMenu("graph");
     m.setPosition(x,y);
     m.open();
@@ -137,8 +139,8 @@ void onRightClick(int x, int  y){ //right click nothing
 void onLeftClick(int x, int  y){ //right click nothing
     print("\nLeft Clicked");
     if(currentAction == ""){ //if no current action hide menus
-    ui.hideAllMenus();
-    updateSelectedVertex(null);
+      ui.hideAllMenus();
+      updateSelectedVertex(null);
       currentAction = "";
     }
 } 
