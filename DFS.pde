@@ -7,13 +7,13 @@ public UndirectedGraph getDFS(UndirectedGraph graph, Vertex a){
     UndirectedGraph dfs= getSubGraphDFS(a, graph, visitedMap);
     if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size())
       return dfs;
-    return graph; //failed to generate graph
+    return null; //failed to generate graph
   }
   
   public UndirectedGraph getSubGraphDFS(Vertex root, UndirectedGraph graph, HashMap<Vertex, Boolean> visitedMap){
   
     UndirectedGraph bfs = new UndirectedGraph();
-
+    
     for(Edge e: graph.getAdjacentEdges(root)){ //for each adjacent edge
        if(!visitedMap.get(e.getDest())){ //if dest is not visited
          visitedMap.put(e.getDest(), true); //mark vertex as visited

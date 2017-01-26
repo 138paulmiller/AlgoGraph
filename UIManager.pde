@@ -29,11 +29,6 @@ class UIManager{
   public Menu getMenu(String id){
     return menus.get(id); 
   }
-  public void openMenu(String id){
-    Menu m=getMenu(id);
-    if( m != null)
-      m.open();   
-  }
   public void hideMenu(String id){
     Menu m=getMenu(id);
     if( m != null){
@@ -62,11 +57,14 @@ class UIManager{
   }
   public Label getIntersectingLabel(float x, float y){
     Label l = null;
+    
+    //for all graphs
     Iterator itX =graphs.values().iterator();
     while(l == null && itX.hasNext()){    
     if(g != null){
       UndirectedGraph g = (UndirectedGraph)itX.next();
        //check if point intersects any labels 
+       if(g != null){
         Iterator itY =g.getVertexSet().iterator();
         while(l==null && itY.hasNext()){
           Vertex v = (Vertex)itY.next(); 
@@ -74,6 +72,7 @@ class UIManager{
             l = v;
           }
         }
+        //check all edges
         itY = g.getEdgeSet().iterator();
         while(l==null && itY.hasNext()){
           Edge v = (Edge)itY.next(); 
@@ -89,6 +88,7 @@ class UIManager{
             l = b;
           }
         }
+       }//end if g != null
       }
     }//end while not found
      return l; 
@@ -96,5 +96,5 @@ class UIManager{
   }
   
  HashMap <String, Menu> menus;
- HashMap <String, UndirectedGraph>  graphs;
+ HashMap <String, UndirectedGraph> graphs; 
 }

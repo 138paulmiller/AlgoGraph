@@ -1,5 +1,6 @@
 interface LabelInterface{
-    void onClick(Label l);
+    void onLeftClick(Label l,int x, int  y);
+    void onRightClick(Label l,int x, int  y);
   }
 public class Label implements Comparable<Label>{
   public Label(int x,int y, int w, int h, String text, int textSize){
@@ -117,9 +118,13 @@ public class Label implements Comparable<Label>{
    public void setInterface(LabelInterface labelInterface){
    this.labelInterface = labelInterface; 
   }
-  public void click(){
-  if(labelInterface !=  null)
-     labelInterface.onClick(this);
+  public void leftClick(int x, int  y){
+    if(labelInterface !=  null)
+       labelInterface.onLeftClick(this,x,y);
+  }
+  public void rightClick(int x, int  y){
+    if(labelInterface !=  null)
+       labelInterface.onRightClick(this,x,y);
   }
   public void draw(){
     
