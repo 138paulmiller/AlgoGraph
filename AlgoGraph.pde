@@ -1,127 +1,24 @@
 import java.util.HashMap;
 float red = 0, green =250,blue = 140;
 float buttonWidth =250 , buttonHeight = 32;
-String currentAction = "";
+String currentAction = "", currentSubGraph = "";
 Vertex selectedVertex;
 boolean vertexAdd, edgeSelection;
 UIManager ui = new UIManager();
 String edgeValueBuilder =null;
-UndirectedGraph undirgraph = new UndirectedGraph();
-
+Graph undirgraph = new Graph();
 Vertex  draggingVertex = null;
+
 void setup(){
   size(1080, 720);
   initDefaultGraph();
-  ui.addMenu("vertex",72,32);
-  ui.addMenu("graph",150,32);
-  ui.addMenuButton("vertex", "BFS", new LabelInterface(){
-                                          public void onLeftClick(Label l, int x, int  y){
-                                            print("\nLeft Clicked : " +  l.getText());
-                                            l.setHighlight(true);
-                                            if(selectedVertex != null){
-                                              currentAction ="bfs";
-                                              addGraph("bfs",getBFS(undirgraph, selectedVertex));                                      updateSelectedVertex(null);
-                                              updateSelectedVertex(null);
-                                            } 
-                                            ui.hideAllMenus();
-                                          }
-                                          public void onRightClick(Label l,int x, int  y){
-                                            print("\nRight Clicked : " +  l.getText());
-                                          }
-                                    });
-  ui.addMenuButton("vertex","DFS", new LabelInterface(){
-                                  public void onLeftClick(Label l, int x, int  y){
-                                    print("\nLeft Clicked : " +  l.getText());
-                                    l.setHighlight(true);
-                                    if(selectedVertex != null){
-                                      currentAction ="dfs";
-                                      addGraph("dfs",getDFS(undirgraph, selectedVertex));
-                                      updateSelectedVertex(null);
-                                    } 
-                                    ui.hideAllMenus();
-                                  }
-                                  public void onRightClick(Label l,int x, int  y){
-                                    print("\nRight Clicked : " +  l.getText());
-                                  }
-                                });
-    ui.addMenuButton("vertex","PATH", new LabelInterface(){
-                                      public void onLeftClick(Label l, int x, int  y){
-                                        print("\nLeft Clicked : " +  l.getText());
-                                        l.setHighlight(true);
-                                        currentAction = "path";
-                                        addGraph("path",null); //clear current path graph
-                                      }
-                                      public void onRightClick(Label l,int x, int  y){
-                                        print("\nRight Clicked : " +  l.getText());
-                                      }
-                                    });
-   
-                              
-   ui.addMenuButton("graph","ADD VERTEX", new LabelInterface(){
-                                          public void onLeftClick(Label l, int x, int  y){
-                                            print("\nLeft Clicked : " +  l.getText());
-                                            l.setHighlight(true);
-                                          }
-                                          public void onRightClick(Label l,int x, int  y){
-                                            print("\nRight Clicked : " +  l.getText());
-                                          }
-                                        });
-   ui.addMenuButton("graph","ADD EDGE", new LabelInterface(){
-                                        public void onLeftClick(Label l, int x, int  y){
-                                          print("\nLeft Clicked : " +  l.getText());
-                                          l.setHighlight(true);
-                                        }
-                                        public void onRightClick(Label l,int x, int  y){
-                                          print("\nRight Clicked : " +  l.getText());
-                                        }
-                                      });
-                              
-    ui.setLabelInterface("UNDIR",new LabelInterface(){
-          public void onLeftClick(Label l, int x, int  y){
-            print("\nCurrentAction: " + currentAction);
-            if(l instanceof Vertex){
-                print("\nLeft Clicked Vertex: " + l.getText());
-                if(currentAction == ""){ //if no action
-                  ui.hideAllMenus();
-                  updateSelectedVertex((Vertex)l); //update as normal
-                }else if(currentAction == "path"){ //left clicked vertex is selected as root
-                  if(selectedVertex != null){
-                    addGraph(currentAction,getShortestPath(undirgraph, selectedVertex,(Vertex)l));                    
-                    updateSelectedVertex(null);
-                  }
-                }
-            }else if(l instanceof Button){
-                  print("\nLeft Clicked Button: " + l.getText());
-            }else if(l instanceof Edge){
-                  print("\nLeft Clicked Edge: " + l.getText());
-            }else{
-                  print("\nLeft Clicked Label: " + l.getText());    
-            }
-          }
-        public void onRightClick(Label l,int x, int  y){
-          ui.hideAllMenus();
-            if(l instanceof Vertex){
-                updateSelectedVertex((Vertex)l);
-                print("\nRight Clicked Vertex: " + l.getText());
-                Menu m = ui.getMenu("vertex");
-                m.setPosition(x,y);
-                m.open();
-            }else if(l instanceof Button){
-                print("\nRight Clicked Button: " + l.getText());
-            }else if(l instanceof Edge){
-                print("\nRight Clicked Edge: " + l.getText());
-            }else{
-                print("\nRight Clicked Label: " + l.getText()); 
-            }
-          }
-    });
-
+  initUI();
 }
 
-void addGraph(String id, UndirectedGraph graph){
+void addGraph(String id, Graph graph, boolean highlight){
   if(graph != null){
-    graph.setDrawVertices(false);
-    graph.setHighlightEdges(true);
+    initInterface(graph);
+    graph.setHighlightEdges(highlight);
  }  
  ui.setGraph(id,graph);
 
@@ -142,6 +39,14 @@ void onLeftClick(int x, int  y){ //right click nothing
       ui.hideAllMenus();
       updateSelectedVertex(null);
       currentAction = "";
+    }else if(currentAction == "addvertex"){
+      Graph g =  ui.getGraph("UNDIR");
+     if(g != null){
+       Vertex v = new Vertex(x,y, char('A'+g.getVertexCount()+1));
+       g.addVertex(v);
+       ui.hideAllMenus();
+       currentAction = "";
+     }
     }
 } 
 void updateSelectedVertex(Vertex v){
@@ -154,9 +59,9 @@ void updateSelectedVertex(Vertex v){
 void draw(){
  background(0); 
  //undirgraph.draw();
- UndirectedGraph g =  ui.getGraph("UNDIR");
+ Graph g =  ui.getGraph("UNDIR");
  if(g != null)g.drawEdges(); //draw edges first
-  g = ui.getGraph(currentAction);
+  g = ui.getGraph(currentSubGraph);
   if(g != null)g.drawEdges();  //draw highlighted edges for graph of current action
   g = ui.getGraph("UNDIR");
   if(g != null)g.drawVertices(); //draw draw vertices of all edges
@@ -210,9 +115,127 @@ void keyPressed(){
      print("\nEdgeValueBuilder: "+ edgeValueBuilder);
   }
 }
-
+void initInterface(Graph g){
+   g.setLabelInterface( new LabelInterface(){
+          public void onLeftClick(Label l, int x, int  y){
+            print("\nCurrentAction: " + currentAction);
+            if(l instanceof Vertex){
+                print("\nLeft Clicked Vertex: " + l.getText());
+                if(currentAction == ""){ //if no action
+                  ui.hideAllMenus();
+                  updateSelectedVertex((Vertex)l); //update as normal
+                }else if(currentAction == "path"){ //left clicked vertex is selected as root
+                  if(selectedVertex != null){
+                    addGraph(currentAction,getShortestPath(undirgraph, selectedVertex,(Vertex)l),  true);                    
+                    updateSelectedVertex(null);
+                    currentAction = "";
+                    currentSubGraph = "path";
+                  }
+                }else if(currentAction == "addedge"){
+                  Graph g =  ui.getGraph("UNDIR");
+                 if(g != null){
+                   g.addEdge(selectedVertex, (Vertex)l, 1);
+                   updateSelectedVertex(null);
+                   currentAction = "";
+                  }
+                }
+            }else if(l instanceof Button){
+                  print("\nLeft Clicked Button: " + l.getText());
+            }else if(l instanceof Edge){
+                  print("\nLeft Clicked Edge: " + l.getText());
+            }else{
+                  print("\nLeft Clicked Label: " + l.getText());    
+            }
+          }
+        public void onRightClick(Label l,int x, int  y){
+          ui.hideAllMenus();
+            if(l instanceof Vertex){
+                updateSelectedVertex((Vertex)l);
+                print("\nRight Clicked Vertex: " + l.getText());
+                Menu m = ui.getMenu("vertex");
+                m.setPosition(x,y);
+                m.open();
+            }else if(l instanceof Button){
+                print("\nRight Clicked Button: " + l.getText());
+            }else if(l instanceof Edge){
+                print("\nRight Clicked Edge: " + l.getText());
+            }else{
+                print("\nRight Clicked Label: " + l.getText()); 
+            }
+          }
+    });
+ 
+}
+void initUI(){
+  ui.addMenu("vertex",150,34);
+  ui.addMenu("graph",150,34);
+  ui.addMenuButton("vertex", "BFS", new LabelInterface(){
+                                          public void onLeftClick(Label l, int x, int  y){
+                                            print("\nLeft Clicked : " +  l.getText());
+                                            l.setHighlight(true);
+                                            if(selectedVertex != null){
+                                              addGraph("bfs",getBFS(undirgraph, selectedVertex), true); 
+                                              currentSubGraph = "bfs";
+                                              updateSelectedVertex(null);
+                                            } 
+                                            ui.hideAllMenus();
+                                          }
+                                          public void onRightClick(Label l,int x, int  y){
+                                            print("\nRight Clicked : " +  l.getText());
+                                          }
+                                    });
+  ui.addMenuButton("vertex","DFS", new LabelInterface(){
+                                  public void onLeftClick(Label l, int x, int  y){
+                                    print("\nLeft Clicked : " +  l.getText());
+                                    l.setHighlight(true);
+                                    if(selectedVertex != null){
+                                      currentSubGraph = "dfs";
+                                      addGraph("dfs",getDFS(undirgraph, selectedVertex), true);
+                                      updateSelectedVertex(null);
+                                    } 
+                                    ui.hideAllMenus();
+                                  }
+                                  public void onRightClick(Label l,int x, int  y){
+                                    print("\nRight Clicked : " +  l.getText());
+                                  }
+                                });
+    ui.addMenuButton("vertex","PATH", new LabelInterface(){
+                                      public void onLeftClick(Label l, int x, int  y){
+                                        print("\nLeft Clicked : " +  l.getText());
+                                        l.setHighlight(true);
+                                        currentAction = "path";
+                                        addGraph("path",null,  false); //clear current path graph
+                                      }
+                                      public void onRightClick(Label l,int x, int  y){
+                                        print("\nRight Clicked : " +  l.getText());
+                                      }
+                                    });
+   
+  ui.addMenuButton("vertex","ADD EDGE", new LabelInterface(){
+                          public void onLeftClick(Label l, int x, int  y){
+                            print("\nLeft Clicked : " +  l.getText());
+                            l.setHighlight(true);
+                            currentAction = "addedge";
+                            
+                          }
+                          public void onRightClick(Label l,int x, int  y){
+                            print("\nRight Clicked : " +  l.getText());
+                          }
+   });                 
+   ui.addMenuButton("graph","ADD VERTEX", new LabelInterface(){
+                                          public void onLeftClick(Label l, int x, int  y){
+                                            print("\nON Left Clicked : " +  l.getText());
+                                            l.setHighlight(true);
+                                            currentAction = "addvertex";
+                                          }
+                                          public void onRightClick(Label l,int x, int  y){
+                                            print("\nOn Right Clicked : " +  l.getText());
+                                          }
+                                        });
+}
 void initDefaultGraph(){
   undirgraph.clear();
+   //set interface callbacks interface 
    Vertex a = new Vertex(440,294,'A');
   Vertex b= new Vertex(45,450,'B');
   Vertex c = new Vertex(590,200,'C');
@@ -240,5 +263,5 @@ void initDefaultGraph(){
   print("\nEdges:\n");
   for(Edge edge : undirgraph.getEdgeSet())
     print("("+edge.getSource().getText() + " "  + edge.getDest().getText() + " :" + edge.getText() + ")" );
-  ui.setGraph("UNDIR",undirgraph);
+  addGraph("UNDIR",undirgraph,  false);     
 }

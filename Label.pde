@@ -118,6 +118,9 @@ public class Label implements Comparable<Label>{
    public void setInterface(LabelInterface labelInterface){
    this.labelInterface = labelInterface; 
   }
+  public LabelInterface getInterface(){
+    return labelInterface;
+  }
   public void leftClick(int x, int  y){
     if(labelInterface !=  null)
        labelInterface.onLeftClick(this,x,y);
