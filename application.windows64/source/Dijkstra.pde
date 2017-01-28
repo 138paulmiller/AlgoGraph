@@ -1,6 +1,6 @@
     
-public HashMap<Vertex,UndirectedGraph> getShortestPaths(UndirectedGraph graph, Vertex initial){
-  HashMap<Vertex,UndirectedGraph>  paths = new HashMap<Vertex, UndirectedGraph>();
+public HashMap<Vertex,Graph> getShortestPaths(Graph graph, Vertex initial){
+  HashMap<Vertex,Graph>  paths = new HashMap<Vertex, Graph>();
   TreeSet<Vertex> q = new TreeSet<Vertex>();
   HashMap<Vertex, Integer> dist = new HashMap<Vertex, Integer>();;
   HashMap<Vertex, Edge> prev  = new HashMap<Vertex, Edge>(); //previous vertex for vertex's shortest path,
@@ -33,7 +33,7 @@ public HashMap<Vertex,UndirectedGraph> getShortestPaths(UndirectedGraph graph, V
   }//end while q ! empty
   for(HashMap.Entry entry : dist.entrySet()){ //for each vertex
     print("\nVertex : " + ((Vertex)entry.getKey()).getText() + " Dist: " + dist.get((Vertex)entry.getKey()) + " - " );
-    paths.put((Vertex)entry.getKey(), new UndirectedGraph());
+    paths.put((Vertex)entry.getKey(), new Graph());
     Vertex a = (Vertex)entry.getKey();
     Edge e = prev.get(a);
     while(e != null){
@@ -47,7 +47,7 @@ public HashMap<Vertex,UndirectedGraph> getShortestPaths(UndirectedGraph graph, V
   return paths;
 }
 
-public UndirectedGraph getShortestPath(UndirectedGraph graph,Vertex start, Vertex end){
+public Graph getShortestPath(Graph graph,Vertex start, Vertex end){
   return getShortestPaths(graph, start).get(end);
  
 }

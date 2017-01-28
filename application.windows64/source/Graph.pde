@@ -4,36 +4,45 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.Collections;
 
-class UndirectedGraph{
-  public UndirectedGraph(){
-    edgeMap = new HashMap<Vertex,TreeSet<Edge>> ();
+class Graph{
+  public Graph(){
+    vertexAdjacencyMap = new HashMap<Vertex,TreeSet<Edge>> ();
     drawVertices = drawEdges = true;
+    directed = false; 
+    weighted = true;
   }
-  public UndirectedGraph(UndirectedGraph other){
-    edgeMap = other.edgeMap;
+  public Graph(Graph other){
+    vertexAdjacencyMap = other.vertexAdjacencyMap;
     drawVertices = other.drawVertices;
-        drawEdges = other.drawEdges;
+    drawEdges = other.drawEdges;
+    weighted = other.weighted;
+    directed = other.directed;
+    labelInterface = other.labelInterface;
 
-    
   }
   public void addVertex(Vertex a){
-     if(a != null && !edgeMap.containsKey(a)){
-       edgeMap.put(a, new TreeSet<Edge>());
+     if(a != null && !vertexAdjacencyMap.containsKey(a)){
+       a.setInterface(labelInterface); 
+       vertexAdjacencyMap.put(a, new TreeSet<Edge>());
      }
   }
-  public void addGraph(UndirectedGraph graph){
-    edgeMap.putAll(graph.edgeMap);
+  public void addGraph(Graph graph){
+    vertexAdjacencyMap.putAll(graph.vertexAdjacencyMap);
   }
   public void addEdge(Vertex source,Vertex dest, int weight){
-    if(source == null && dest == null) return;
-   Edge e = new Edge(source,dest,weight);
-   Edge eComp = new Edge(dest, source,weight);
+   Edge e = getEdge(source, dest);
+   Edge eComp = getEdge(dest, source);
    addVertex(source);      
     addVertex(dest);//tries to add if not in
-    if(!edgeMap.get(source).contains(e) && !edgeMap.get(dest).contains(e)){
-      edgeMap.get(source).add(e);
-      edgeMap.get(dest).add(eComp);
-
+    if(!directed){
+      if((e == null && eComp == null)) {
+        e =  new Edge(source,dest,weight);
+        eComp =  new Edge(dest, source,weight);
+        e.setInterface(labelInterface);
+        eComp.setInterface(labelInterface);
+        vertexAdjacencyMap.get(source).add(e);
+        vertexAdjacencyMap.get(dest).add(eComp);
+      }
     }
   }
   public void setDrawVertices(boolean drawVertices){
@@ -41,6 +50,12 @@ class UndirectedGraph{
   }
   public void setDrawEdges(boolean drawEdges){
     this.drawEdges = drawEdges;
+  }
+  public void setWeighted(boolean isWeighted){
+    this.weighted = isWeighted;
+  }
+  public void setDirected(boolean isDirected){
+    this.directed = isDirected;
   }
   public void setHighlightEdges(boolean isHighlighted){
    for(Edge e:getEdgeSet())
@@ -57,23 +72,38 @@ class UndirectedGraph{
     }
     return null;
   }
-  public void draw(){
+  public void drawEdges(){
      
     if(drawEdges)
        for(Edge e : getEdgeSet())
          e.draw();
-
+  }
+  public boolean isDrawVertices()
+  {
+    return drawVertices;
+  }
+  public boolean isDrawEdges()
+  {
+    return drawEdges;
+  }
+  public void drawVertices(){
     if(drawVertices)
       for(Vertex v: getVertexSet())
         v.draw();
   }
   public ArrayList<Vertex> getVertexSet(){
-    ArrayList<Vertex> sortList=  new ArrayList(edgeMap.keySet());
+    ArrayList<Vertex> sortList=  new ArrayList(vertexAdjacencyMap.keySet());
     Collections.sort(sortList);
     return sortList;
   }
+  public int getVertexCount(){
+      return (new ArrayList(vertexAdjacencyMap.keySet())).size();
+
+  }
   public Edge getEdge(Vertex source, Vertex dest){
-    TreeSet<Edge> edgeSet = edgeMap.get(source);
+    if(source == null || dest == null) return null;
+    TreeSet<Edge> edgeSet = vertexAdjacencyMap.get(source);
+    if(edgeSet == null) return null;
     boolean found = false;
     Edge e  = null;
     Iterator it = edgeSet.iterator();
@@ -89,8 +119,8 @@ class UndirectedGraph{
     return null;
   }
   public void updateEdgeWeight(Vertex source, Vertex dest, int weight){
-    TreeSet<Edge>sourceEdgeSet = edgeMap.get(source);
-    TreeSet<Edge>destEdgeSet = edgeMap.get(dest);
+    TreeSet<Edge>sourceEdgeSet = vertexAdjacencyMap.get(source);
+    TreeSet<Edge>destEdgeSet = vertexAdjacencyMap.get(dest);
 
     boolean found = false;
     Edge e = null;
@@ -114,20 +144,30 @@ class UndirectedGraph{
     }
   }
   public ArrayList<Edge> getAdjacentEdges(Vertex v){
-     ArrayList<Edge> sortList = new ArrayList<Edge>(edgeMap.get(v)); 
+     ArrayList<Edge> sortList = new ArrayList<Edge>(vertexAdjacencyMap.get(v)); 
      Collections.sort(sortList);
      return sortList;
   }
   public ArrayList<Edge> getEdgeSet(){
     ArrayList<Edge> sortList = new ArrayList<Edge>();
     for(Vertex v : getVertexSet())
-     sortList.addAll(edgeMap.get(v)); 
+     sortList.addAll(vertexAdjacencyMap.get(v)); 
    Collections.sort(sortList);
    return sortList;
   }
   public void clear(){
-     edgeMap.clear(); 
+     vertexAdjacencyMap.clear(); 
   }
-  HashMap<Vertex,TreeSet<Edge>> edgeMap;
+  public void setLabelInterface( LabelInterface labelInterface){
+   this.labelInterface = labelInterface;
+    for(Edge e: getEdgeSet())
+      e.setInterface(labelInterface); 
+    for(Vertex v: getVertexSet())
+      v.setInterface(labelInterface); 
+
+ }
+  LabelInterface labelInterface;
+  HashMap<Vertex,TreeSet<Edge>> vertexAdjacencyMap;
   boolean drawVertices, drawEdges;
+  boolean directed, weighted;
 }

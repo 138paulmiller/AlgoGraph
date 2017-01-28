@@ -2,7 +2,7 @@ import java.util.HashMap;
 class UIManager{
   public UIManager(){
   menus = new HashMap <String, Menu>();
-  graphs = new HashMap <String, UndirectedGraph>();
+  graphs = new HashMap <String, Graph>();
 
   }
   public void addMenu(String id, int w, int h){
@@ -11,28 +11,11 @@ class UIManager{
   public void addMenuButton(String menuId, String buttonId, LabelInterface labelInterface){
    getMenu(menuId).addButton(buttonId, labelInterface);  
   }
- public void setGraph(String id, UndirectedGraph graph){
+ public void setGraph(String id, Graph graph){
     this.graphs.put(id,graph); 
- }
-  public void setLabelInterface(String graphId,LabelInterface labelInterface){
-    UndirectedGraph g = graphs.get(graphId);
-    if(g != null){
-      for(Edge e: g.getEdgeSet())
-           e.setInterface(labelInterface);  
-  
-      for(Vertex v: g.getVertexSet())
-       v.setInterface(labelInterface);  
-    }
-  }
-  
-  
+ }  
   public Menu getMenu(String id){
     return menus.get(id); 
-  }
-  public void openMenu(String id){
-    Menu m=getMenu(id);
-    if( m != null)
-      m.open();   
   }
   public void hideMenu(String id){
     Menu m=getMenu(id);
@@ -50,12 +33,11 @@ class UIManager{
   public void clear(){
     
     menus.clear();
-    for(UndirectedGraph g : graphs.values())
+    for(Graph g : graphs.values())
       g.clear();
   }
-  public void draw(String id){
-    UndirectedGraph g = graphs.get(id);
-    if(g != null)g.draw();
+  public Graph getGraph(String id){
+    return graphs.get(id);
   }
   public void drawMenus(){
      for(Menu m : menus.values())
@@ -63,39 +45,47 @@ class UIManager{
   }
   public Label getIntersectingLabel(float x, float y){
     Label l = null;
+    
+    //for all graphs
     Iterator itX =graphs.values().iterator();
     while(l == null && itX.hasNext()){    
-    if(g != null){
-      UndirectedGraph g = (UndirectedGraph)itX.next();
+      Graph g = (Graph)itX.next();
        //check if point intersects any labels 
+       if(g != null){
+        
         Iterator itY =g.getVertexSet().iterator();
-        while(l==null && itY.hasNext()){
-          Vertex v = (Vertex)itY.next(); 
-          if(v.intersects(x,y)){
-            l = v;
+        if(g.isDrawVertices()){
+          while(l==null && itY.hasNext()){
+            Vertex v = (Vertex)itY.next(); 
+            if(v.intersects(x,y)){
+              l = v;
+            }
           }
         }
-        itY = g.getEdgeSet().iterator();
-        while(l==null && itY.hasNext()){
-          Edge v = (Edge)itY.next(); 
-          if(v.intersects(x,y)){
-            l = v;
+        if(g.isDrawEdges()){
+          //check all edges
+          itY = g.getEdgeSet().iterator();
+          while(l==null && itY.hasNext()){
+            Edge v = (Edge)itY.next(); 
+            if(v.intersects(x,y)){
+              l = v;
+            }
           }
-        }
         //check menu labels if intersecting label still not found
-        itY = menus.values().iterator();
-        while(l==null && itY.hasNext()){
-          Button b = ((Menu)itY.next()).getIntersectingButton(x,y); 
+        }
+       }//end if g != null
+    }//end while not found
+   Iterator itZ = menus.values().iterator();
+        while(l==null && itZ.hasNext()){
+          Button b = ((Menu)itZ.next()).getIntersectingButton(x,y); 
           if(b != null){
             l = b;
           }
         }
-      }
-    }//end while not found
      return l; 
-
-  }
-  
+ }
+ 
  HashMap <String, Menu> menus;
- HashMap <String, UndirectedGraph>  graphs;
+ HashMap <String, Graph> graphs; 
+
 }

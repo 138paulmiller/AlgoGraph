@@ -1,6 +1,6 @@
 import java.util.HashMap;
-public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
-    UndirectedGraph bfs = new UndirectedGraph();
+public Graph getBFS(Graph graph, Vertex a){
+    Graph bfs = new Graph();
     HashMap<Vertex, Boolean> visitedMap = new HashMap<Vertex, Boolean>();
     for(Vertex v : graph.getVertexSet())
       visitedMap.put(v, false);
@@ -20,5 +20,5 @@ public UndirectedGraph getBFS(UndirectedGraph graph, Vertex a){
     }
     if(bfs.getVertexSet().size() == graph.getVertexSet().size())
       return bfs;
-    return graph; //failed to generate graph
+    return null; //failed to generate graph
   }

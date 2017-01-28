@@ -36,8 +36,7 @@ class Edge extends Label {
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Edge) && (this.source == ((Edge)o).source && 
-                                    this.dest == ((Edge)o).dest && 
-                                     this.weight == ((Edge)o).weight);
+                                    this.dest == ((Edge)o).dest);
   }
   public Vertex getSource() {
       return source;
@@ -63,15 +62,18 @@ class Edge extends Label {
     if(hasVertices()){
       pushMatrix();
       //draw line from source to dest
-      if(highlight)
+      if(highlight){
         stroke(lb,lg,lr);
-
-      else
+        fill(lb,lg,lr);
+      }else{
         stroke(lr,lg,lb);
-      strokeWeight(4);
+        fill(lr,lg,lb);
+
+      }strokeWeight(4);
+      int mx = (int)(source.getX()+dest.getX())/2;
+      int my = (int)(source.getY()+ dest.getY())/2;
       line(source.getX(),source.getY(),dest.getX(),dest.getY());
-      setPosition((int)(source.getX()+dest.getX())/2,//x
-                     (int)(source.getY()+ dest.getY())/2);
+      setPosition(mx, my);
       super.draw();
       popMatrix();
     }
