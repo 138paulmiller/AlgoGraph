@@ -36,8 +36,7 @@ class Edge extends Label {
   }
   @Override public boolean equals(Object o) {
       return (o instanceof Edge) && (this.source == ((Edge)o).source && 
-                                    this.dest == ((Edge)o).dest && 
-                                     this.weight == ((Edge)o).weight);
+                                    this.dest == ((Edge)o).dest);
   }
   public Vertex getSource() {
       return source;

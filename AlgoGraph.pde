@@ -135,7 +135,6 @@ void initInterface(Graph g){
                   Graph g =  ui.getGraph("UNDIR");
                  if(g != null){
                    g.addEdge(selectedVertex, (Vertex)l, 1);
-                   updateSelectedVertex(null);
                    currentAction = "";
                   }
                 }
@@ -244,6 +243,7 @@ void initDefaultGraph(){
   Vertex f = new Vertex(105,85,'F');
   Vertex g = new Vertex(330,220,'G');
   undirgraph.addEdge(a,b, 14);
+    //undirgraph.addEdge(b,a, 80);
   undirgraph.addEdge(a,c, 34);
   undirgraph.addEdge(a,d, 56);
   undirgraph.addEdge(d,c, 12);

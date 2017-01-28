@@ -30,22 +30,21 @@ class Graph{
     vertexAdjacencyMap.putAll(graph.vertexAdjacencyMap);
   }
   public void addEdge(Vertex source,Vertex dest, int weight){
-    if(source == null && dest == null) return;
-   Edge e = new Edge(source,dest,weight);
-   Edge eComp = new Edge(dest, source,weight);
-    e.setInterface(labelInterface);
-    eComp.setInterface(labelInterface);
-    
+   Edge e = getEdge(source, dest);
+   Edge eComp = getEdge(dest, source);
    addVertex(source);      
     addVertex(dest);//tries to add if not in
-    if(!vertexAdjacencyMap.get(source).contains(e)) {
-      vertexAdjacencyMap.get(source).add(e);
-      if(!directed && !vertexAdjacencyMap.get(dest).contains(e))
+    if(!directed){
+      if((e == null && eComp == null)) {
+        e =  new Edge(source,dest,weight);
+        eComp =  new Edge(dest, source,weight);
+        e.setInterface(labelInterface);
+        eComp.setInterface(labelInterface);
+        vertexAdjacencyMap.get(source).add(e);
         vertexAdjacencyMap.get(dest).add(eComp);
-
+      }
     }
   }
-  
   public void setDrawVertices(boolean drawVertices){
     this.drawVertices = drawVertices;
   }
@@ -102,7 +101,9 @@ class Graph{
 
   }
   public Edge getEdge(Vertex source, Vertex dest){
+    if(source == null || dest == null) return null;
     TreeSet<Edge> edgeSet = vertexAdjacencyMap.get(source);
+    if(edgeSet == null) return null;
     boolean found = false;
     Edge e  = null;
     Iterator it = edgeSet.iterator();
