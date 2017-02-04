@@ -17,7 +17,7 @@ class Graph{
     drawEdges = other.drawEdges;
     weighted = other.weighted;
     directed = other.directed;
-    labelInterface = other.labelInterface;
+    setLabelInterface(other.labelInterface);
 
   }
   public void addVertex(Vertex a){

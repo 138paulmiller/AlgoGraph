@@ -17,10 +17,11 @@ void setup(){
 
 void addGraph(String id, Graph graph, boolean highlight){
   if(graph != null){
+    print("Adding Graph : " + id + "\n");
     initInterface(graph);
-    graph.setHighlightEdges(highlight);
+    graph.setHighlightEdges(highlight); 
  }  
- ui.setGraph(id,graph);
+   ui.setGraph(id,graph);
 
 }
 
