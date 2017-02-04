@@ -5,8 +5,9 @@ public Graph getDFS(Graph graph, Vertex a){
       visitedMap.put(v, false);
     visitedMap.put(a, true); //mark vertex as visited
     Graph dfs= getSubGraphDFS(a, graph, visitedMap);
-    if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size())
+    if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size()){
       return dfs;
+    }
     return null; //failed to generate graph
   }
   

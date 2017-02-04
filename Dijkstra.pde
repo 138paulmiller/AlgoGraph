@@ -48,6 +48,6 @@ public HashMap<Vertex,Graph> getShortestPaths(Graph graph, Vertex initial){
 }
 
 public Graph getShortestPath(Graph graph,Vertex start, Vertex end){
-  return getShortestPaths(graph, start).get(end);
- 
+  Graph g = getShortestPaths(graph, start).get(end);
+   return g;
 }

@@ -45,7 +45,7 @@ public class Label implements Comparable<Label>{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
-
+    labelInterface = other.labelInterface;
   }
   public String getText(){
    return text;

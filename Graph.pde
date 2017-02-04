@@ -22,7 +22,7 @@ class Graph{
   }
   public void addVertex(Vertex a){
      if(a != null && !vertexAdjacencyMap.containsKey(a)){
-       a.setInterface(labelInterface); 
+       if(labelInterface!= null)a.setInterface(labelInterface); 
        vertexAdjacencyMap.put(a, new TreeSet<Edge>());
      }
   }
@@ -159,12 +159,16 @@ class Graph{
      vertexAdjacencyMap.clear(); 
   }
   public void setLabelInterface( LabelInterface labelInterface){
-   this.labelInterface = labelInterface;
-    for(Edge e: getEdgeSet())
-      e.setInterface(labelInterface); 
-    for(Vertex v: getVertexSet())
-      v.setInterface(labelInterface); 
-
+    if(labelInterface != null){
+     this.labelInterface = labelInterface;
+      for(Edge e: getEdgeSet())
+        e.setInterface(labelInterface); 
+      for(Vertex v: getVertexSet())
+        v.setInterface(labelInterface); 
+    }
+ }
+ public LabelInterface getInterface(){
+   return labelInterface;
  }
   LabelInterface labelInterface;
   HashMap<Vertex,TreeSet<Edge>> vertexAdjacencyMap;

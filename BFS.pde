@@ -18,7 +18,8 @@ public Graph getBFS(Graph graph, Vertex a){
         }
       }
     }
-    if(bfs.getVertexSet().size() == graph.getVertexSet().size())
+    if(bfs.getVertexSet().size() == graph.getVertexSet().size()){
       return bfs;
+    }
     return null; //failed to generate graph
   }
