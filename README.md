@@ -21,7 +21,7 @@ Designed for Quick Visual Solutions to algorithms on an Graph.
 ##### To run algorithm
  * Left click on the menu, some algorithms may weight until another vertex is selected
 
-![Alt text](img/quick_demo.webm)
+![Alt text](img/quick_demo.gif)
 
 ## UI Demo on an Undirected Weighted Graph
 https://youtu.be/vlnw10mckHM
