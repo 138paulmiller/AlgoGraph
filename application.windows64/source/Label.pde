@@ -45,8 +45,7 @@ public class Label implements Comparable<Label>{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
-    this.labelInterface = other.labelInterface;
-
+    labelInterface = other.labelInterface;
   }
   public String getText(){
    return text;
@@ -128,6 +127,8 @@ public class Label implements Comparable<Label>{
   public void rightClick(int x, int  y){
     if(labelInterface !=  null)
        labelInterface.onRightClick(this,x,y);
+    else
+       print("\nLabel Interface NULL\n");
   }
   public void draw(){
     

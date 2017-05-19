@@ -29,10 +29,10 @@ public class AlgoGraph extends PApplet {
 float red = 0, green =250,blue = 140;
 float buttonWidth =250 , buttonHeight = 32;
 String currentAction = "", currentSubGraph = "";
-Vertex selectedVertex;
+Vertex selectedVertex, otherSelectedVertex;
 boolean vertexAdd, edgeSelection;
-UIManager ui = new UIManager();
-String edgeValueBuilder =null;
+UIManager ui = new UIManager(); //ui manager contains a map to multiple different graphs that can be dynamically requested
+String edgeValueBuilder ="";
 Graph undirgraph = new Graph();
 Vertex  draggingVertex = null;
 
@@ -44,10 +44,11 @@ public void setup(){
 
 public void addGraph(String id, Graph graph, boolean highlight){
   if(graph != null){
+    print("Adding Graph : " + id + "\n");
     initInterface(graph);
-    graph.setHighlightEdges(highlight);
+    graph.setHighlightEdges(highlight); 
  }  
- ui.setGraph(id,graph);
+   ui.setGraph(id,graph);
 
 }
 
@@ -55,17 +56,23 @@ public void onRightClick(int x, int  y){ //right click nothing
     print("\nRight Clicked");
     ui.hideAllMenus();
     updateSelectedVertex(null);//unselect vertices
+    otherSelectedVertex = null;
+    edgeValueBuilder = "";
+    currentAction = "";
     Menu m = ui.getMenu("graph");
     m.setPosition(x,y);
     m.open();
-    currentAction = "";
+    
 }
 public void onLeftClick(int x, int  y){ //right click nothing
     print("\nLeft Clicked");
     if(currentAction == ""){ //if no current action hide menus
       ui.hideAllMenus();
       updateSelectedVertex(null);
+      otherSelectedVertex = null;
+      edgeValueBuilder = "";
       currentAction = "";
+      
     }else if(currentAction == "addvertex"){
       Graph g =  ui.getGraph("UNDIR");
      if(g != null){
@@ -84,17 +91,35 @@ public void updateSelectedVertex(Vertex v){
     selectedVertex.setHighlight(true);
 }
 public void draw(){
- background(0); 
+   background(0); 
  //undirgraph.draw();
- Graph g =  ui.getGraph("UNDIR");
- if(g != null)g.drawEdges(); //draw edges first
+   Graph g =  ui.getGraph("UNDIR");
+  
+  if(g != null)
+  {
+    if(edgeValueBuilder != ""){ //if adding value to edge, update
+    //create expanding highlight box around current edge being update when building
+      g.getEdge(selectedVertex , otherSelectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
+      g.getEdge(otherSelectedVertex, selectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
+      Label box = new Label((int)(selectedVertex.getX()+otherSelectedVertex.getX())/2,
+                (int)(selectedVertex.getY()+otherSelectedVertex.getY())/2,
+                (int)(selectedVertex.getW()+selectedVertex.getW()*edgeValueBuilder.length()/3), 
+                (int)selectedVertex.getH(),  "",  1);
+      box.setRGB(140, 226, 0);
+      box.draw(); //box around edge
+     }
+     g.drawEdges(); //draw edges first
+
+  }
   g = ui.getGraph(currentSubGraph);
+  
   if(g != null)g.drawEdges();  //draw highlighted edges for graph of current action
+  
   g = ui.getGraph("UNDIR");
   if(g != null)g.drawVertices(); //draw draw vertices of all edges
-
-  ui.drawMenus();
-
+  
+    ui.drawMenus();
+  
 }
 public void mouseClicked(){
     Label l = ui.getIntersectingLabel(mouseX, mouseY);//get vertex clicked
@@ -137,12 +162,25 @@ public void mouseReleased(){
   }
 }
 public void keyPressed(){
-    if(keyCode >= '0' && keyCode <= '9' && edgeValueBuilder.length() <= 3) { //set value to current string edge builder value
+   if(keyCode >= '0' && keyCode <= '9' && edgeValueBuilder.length() <= 3) { //set value to current string edge builder value
      edgeValueBuilder += PApplet.parseChar(keyCode);
-     print("\nEdgeValueBuilder: "+ edgeValueBuilder);
+  }else if(keyCode == '\n'){ //terminate edgevalue
+    edgeValueBuilder = "";
+    updateSelectedVertex(null);
+    otherSelectedVertex = null;
+    currentSubGraph = "";
+    
+  }else if(keyCode == 8){ //backspace
+    if(edgeValueBuilder.length() > 0)
+      edgeValueBuilder= edgeValueBuilder.substring(0, edgeValueBuilder.length()-1); //remove last add value
+      if(edgeValueBuilder.length() == 0)
+        edgeValueBuilder = "0";
   }
+   print("\nKEY:" + keyCode);
+
 }
 public void initInterface(Graph g){
+  //Bring the callback from label clicks to here
    g.setLabelInterface( new LabelInterface(){
           public void onLeftClick(Label l, int x, int  y){
             print("\nCurrentAction: " + currentAction);
@@ -161,7 +199,9 @@ public void initInterface(Graph g){
                 }else if(currentAction == "addedge"){
                   Graph g =  ui.getGraph("UNDIR");
                  if(g != null){
-                   g.addEdge(selectedVertex, (Vertex)l, 1);
+                   edgeValueBuilder = "0";
+                   otherSelectedVertex = (Vertex)l;
+                   g.addEdge(selectedVertex, otherSelectedVertex, 0);
                    currentAction = "";
                   }
                 }
@@ -312,8 +352,9 @@ public Graph getBFS(Graph graph, Vertex a){
         }
       }
     }
-    if(bfs.getVertexSet().size() == graph.getVertexSet().size())
+    if(bfs.getVertexSet().size() == graph.getVertexSet().size()){
       return bfs;
+    }
     return null; //failed to generate graph
   }
 
@@ -335,23 +376,25 @@ public Graph getDFS(Graph graph, Vertex a){
       visitedMap.put(v, false);
     visitedMap.put(a, true); //mark vertex as visited
     Graph dfs= getSubGraphDFS(a, graph, visitedMap);
-    if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size())
+    if(dfs != null && dfs.getVertexSet().size() == graph.getVertexSet().size()){
       return dfs;
+    }
     return null; //failed to generate graph
   }
   
   public Graph getSubGraphDFS(Vertex root, Graph graph, HashMap<Vertex, Boolean> visitedMap){
   
-    Graph bfs = new Graph();
+    Graph dfs = new Graph();
     
     for(Edge e: graph.getAdjacentEdges(root)){ //for each adjacent edge
        if(!visitedMap.get(e.getDest())){ //if dest is not visited
          visitedMap.put(e.getDest(), true); //mark vertex as visited
-         bfs.addGraph(getSubGraphDFS(e.getDest(),graph, visitedMap)) ;  //add to traversal queue
-         bfs.addEdge(e.getSource(),e.getDest(),e.getWeight());   
+         dfs.addGraph(getSubGraphDFS(e.getDest(),graph, visitedMap)) ;  //add to traversal queue
+         dfs.addEdge(e.getSource(),e.getDest(),e.getWeight());   
         }
       }
-    return bfs;
+     return dfs;
+
   }
     
 public HashMap<Vertex,Graph> getShortestPaths(Graph graph, Vertex initial){
@@ -403,8 +446,8 @@ public HashMap<Vertex,Graph> getShortestPaths(Graph graph, Vertex initial){
 }
 
 public Graph getShortestPath(Graph graph,Vertex start, Vertex end){
-  return getShortestPaths(graph, start).get(end);
- 
+  Graph g = getShortestPaths(graph, start).get(end);
+   return g;
 }
 
 class Edge extends Label {
@@ -509,12 +552,12 @@ class Graph{
     drawEdges = other.drawEdges;
     weighted = other.weighted;
     directed = other.directed;
-    labelInterface = other.labelInterface;
+    setLabelInterface(other.labelInterface);
 
   }
   public void addVertex(Vertex a){
      if(a != null && !vertexAdjacencyMap.containsKey(a)){
-       a.setInterface(labelInterface); 
+       if(labelInterface!= null)a.setInterface(labelInterface); 
        vertexAdjacencyMap.put(a, new TreeSet<Edge>());
      }
   }
@@ -527,7 +570,11 @@ class Graph{
    addVertex(source);      
     addVertex(dest);//tries to add if not in
     if(!directed){
-      if((e == null && eComp == null)) {
+      if((e != null && eComp != null)){
+        //update
+          e.setWeight(weight);
+          eComp.setWeight(weight);
+      }else{
         e =  new Edge(source,dest,weight);
         eComp =  new Edge(dest, source,weight);
         e.setInterface(labelInterface);
@@ -651,12 +698,16 @@ class Graph{
      vertexAdjacencyMap.clear(); 
   }
   public void setLabelInterface( LabelInterface labelInterface){
-   this.labelInterface = labelInterface;
-    for(Edge e: getEdgeSet())
-      e.setInterface(labelInterface); 
-    for(Vertex v: getVertexSet())
-      v.setInterface(labelInterface); 
-
+    if(labelInterface != null){
+     this.labelInterface = labelInterface;
+      for(Edge e: getEdgeSet())
+        e.setInterface(labelInterface); 
+      for(Vertex v: getVertexSet())
+        v.setInterface(labelInterface); 
+    }
+ }
+ public LabelInterface getInterface(){
+   return labelInterface;
  }
   LabelInterface labelInterface;
   HashMap<Vertex,TreeSet<Edge>> vertexAdjacencyMap;
@@ -710,8 +761,7 @@ public class Label implements Comparable<Label>{
     this.b = other.b;
     this.tb = other.tb;
     this.filled = other.filled;
-    this.labelInterface = other.labelInterface;
-
+    labelInterface = other.labelInterface;
   }
   public String getText(){
    return text;
@@ -793,6 +843,8 @@ public class Label implements Comparable<Label>{
   public void rightClick(int x, int  y){
     if(labelInterface !=  null)
        labelInterface.onRightClick(this,x,y);
+    else
+       print("\nLabel Interface NULL\n");
   }
   public void draw(){
     

@@ -2,10 +2,10 @@ import java.util.HashMap;
 float red = 0, green =250,blue = 140;
 float buttonWidth =250 , buttonHeight = 32;
 String currentAction = "", currentSubGraph = "";
-Vertex selectedVertex;
+Vertex selectedVertex, otherSelectedVertex;
 boolean vertexAdd, edgeSelection;
-UIManager ui = new UIManager();
-String edgeValueBuilder =null;
+UIManager ui = new UIManager(); //ui manager contains a map to multiple different graphs that can be dynamically requested
+String edgeValueBuilder ="";
 Graph undirgraph = new Graph();
 Vertex  draggingVertex = null;
 
@@ -17,10 +17,11 @@ void setup(){
 
 void addGraph(String id, Graph graph, boolean highlight){
   if(graph != null){
+    print("Adding Graph : " + id + "\n");
     initInterface(graph);
-    graph.setHighlightEdges(highlight);
+    graph.setHighlightEdges(highlight); 
  }  
- ui.setGraph(id,graph);
+   ui.setGraph(id,graph);
 
 }
 
@@ -28,17 +29,23 @@ void onRightClick(int x, int  y){ //right click nothing
     print("\nRight Clicked");
     ui.hideAllMenus();
     updateSelectedVertex(null);//unselect vertices
+    otherSelectedVertex = null;
+    edgeValueBuilder = "";
+    currentAction = "";
     Menu m = ui.getMenu("graph");
     m.setPosition(x,y);
     m.open();
-    currentAction = "";
+    
 }
 void onLeftClick(int x, int  y){ //right click nothing
     print("\nLeft Clicked");
     if(currentAction == ""){ //if no current action hide menus
       ui.hideAllMenus();
       updateSelectedVertex(null);
+      otherSelectedVertex = null;
+      edgeValueBuilder = "";
       currentAction = "";
+      
     }else if(currentAction == "addvertex"){
       Graph g =  ui.getGraph("UNDIR");
      if(g != null){
@@ -57,17 +64,35 @@ void updateSelectedVertex(Vertex v){
     selectedVertex.setHighlight(true);
 }
 void draw(){
- background(0); 
+   background(0); 
  //undirgraph.draw();
- Graph g =  ui.getGraph("UNDIR");
- if(g != null)g.drawEdges(); //draw edges first
+   Graph g =  ui.getGraph("UNDIR");
+  
+  if(g != null)
+  {
+    if(edgeValueBuilder != ""){ //if adding value to edge, update
+    //create expanding highlight box around current edge being update when building
+      g.getEdge(selectedVertex , otherSelectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
+      g.getEdge(otherSelectedVertex, selectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
+      Label box = new Label((int)(selectedVertex.getX()+otherSelectedVertex.getX())/2,
+                (int)(selectedVertex.getY()+otherSelectedVertex.getY())/2,
+                (int)(selectedVertex.getW()+selectedVertex.getW()*edgeValueBuilder.length()/3), 
+                (int)selectedVertex.getH(),  "",  1);
+      box.setRGB(140, 226, 0);
+      box.draw(); //box around edge
+     }
+     g.drawEdges(); //draw edges first
+
+  }
   g = ui.getGraph(currentSubGraph);
+  
   if(g != null)g.drawEdges();  //draw highlighted edges for graph of current action
+  
   g = ui.getGraph("UNDIR");
   if(g != null)g.drawVertices(); //draw draw vertices of all edges
-
-  ui.drawMenus();
-
+  
+    ui.drawMenus();
+  
 }
 void mouseClicked(){
     Label l = ui.getIntersectingLabel(mouseX, mouseY);//get vertex clicked
@@ -110,12 +135,25 @@ void mouseReleased(){
   }
 }
 void keyPressed(){
-    if(keyCode >= '0' && keyCode <= '9' && edgeValueBuilder.length() <= 3) { //set value to current string edge builder value
+   if(keyCode >= '0' && keyCode <= '9' && edgeValueBuilder.length() <= 3) { //set value to current string edge builder value
      edgeValueBuilder += char(keyCode);
-     print("\nEdgeValueBuilder: "+ edgeValueBuilder);
+  }else if(keyCode == '\n'){ //terminate edgevalue
+    edgeValueBuilder = "";
+    updateSelectedVertex(null);
+    otherSelectedVertex = null;
+    currentSubGraph = "";
+    
+  }else if(keyCode == 8){ //backspace
+    if(edgeValueBuilder.length() > 0)
+      edgeValueBuilder= edgeValueBuilder.substring(0, edgeValueBuilder.length()-1); //remove last add value
+      if(edgeValueBuilder.length() == 0)
+        edgeValueBuilder = "0";
   }
+   print("\nKEY:" + keyCode);
+
 }
 void initInterface(Graph g){
+  //Bring the callback from label clicks to here
    g.setLabelInterface( new LabelInterface(){
           public void onLeftClick(Label l, int x, int  y){
             print("\nCurrentAction: " + currentAction);
@@ -134,7 +172,9 @@ void initInterface(Graph g){
                 }else if(currentAction == "addedge"){
                   Graph g =  ui.getGraph("UNDIR");
                  if(g != null){
-                   g.addEdge(selectedVertex, (Vertex)l, 1);
+                   edgeValueBuilder = "0";
+                   otherSelectedVertex = (Vertex)l;
+                   g.addEdge(selectedVertex, otherSelectedVertex, 0);
                    currentAction = "";
                   }
                 }
