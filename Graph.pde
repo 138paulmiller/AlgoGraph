@@ -35,7 +35,11 @@ class Graph{
    addVertex(source);      
     addVertex(dest);//tries to add if not in
     if(!directed){
-      if((e == null && eComp == null)) {
+      if((e != null && eComp != null)){
+        //update
+          e.setWeight(weight);
+          eComp.setWeight(weight);
+      }else{
         e =  new Edge(source,dest,weight);
         eComp =  new Edge(dest, source,weight);
         e.setInterface(labelInterface);

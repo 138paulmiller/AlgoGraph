@@ -29,10 +29,13 @@ void onRightClick(int x, int  y){ //right click nothing
     print("\nRight Clicked");
     ui.hideAllMenus();
     updateSelectedVertex(null);//unselect vertices
+    otherSelectedVertex = null;
+    edgeValueBuilder = "";
+    currentAction = "";
     Menu m = ui.getMenu("graph");
     m.setPosition(x,y);
     m.open();
-    currentAction = "";
+    
 }
 void onLeftClick(int x, int  y){ //right click nothing
     print("\nLeft Clicked");
@@ -69,15 +72,15 @@ void draw(){
   {
     if(edgeValueBuilder != ""){ //if adding value to edge, update
     //create expanding highlight box around current edge being update when building
+      g.getEdge(selectedVertex , otherSelectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
+      g.getEdge(otherSelectedVertex, selectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
       Label box = new Label((int)(selectedVertex.getX()+otherSelectedVertex.getX())/2,
                 (int)(selectedVertex.getY()+otherSelectedVertex.getY())/2,
                 (int)(selectedVertex.getW()+selectedVertex.getW()*edgeValueBuilder.length()/3), 
                 (int)selectedVertex.getH(),  "",  1);
       box.setRGB(140, 226, 0);
       box.draw(); //box around edge
-      g.getEdge(selectedVertex , otherSelectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
-      g.getEdge(otherSelectedVertex, selectedVertex).setWeight(Integer.parseInt(edgeValueBuilder));    
-    }
+     }
      g.drawEdges(); //draw edges first
 
   }
