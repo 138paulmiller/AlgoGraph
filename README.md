@@ -1,6 +1,6 @@
 # AlgoGraph
 A Processing 3 Application used to visualize and demonstrate algorithms on graphs. 
-Designed for Quick Visual Solutions to algorithms on an Graph. 
+Designed for Quick Visual Solutions to algorithms on an undirected Graph. 
 
 ### UI Controls
 1. Left Click
